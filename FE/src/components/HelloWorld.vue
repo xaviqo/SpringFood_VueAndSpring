@@ -11,7 +11,7 @@
         </h1>
 
         <p class="subheading font-weight-light">
-          Deliveries manager developed with SpringBoot and Vue.
+          Delivery dashboard developed with SpringBoot and Vue.
           <br>Explore my other projects in my
           <a
             href="https://community.vuetifyjs.com"

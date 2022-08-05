@@ -19,5 +19,6 @@
 /home/xavi/eclipse-workspace/SpringFood/src/main/java/xavi/tech/springfood/repository/ClientRepository.java
 /home/xavi/eclipse-workspace/SpringFood/src/main/java/xavi/tech/springfood/ServletInitializer.java
 /home/xavi/eclipse-workspace/SpringFood/src/main/java/xavi/tech/springfood/service/AccountServiceImpl.java
+/home/xavi/eclipse-workspace/SpringFood/src/main/java/xavi/tech/springfood/model/DashboardCard.java
 /home/xavi/eclipse-workspace/SpringFood/src/main/java/xavi/tech/springfood/mapper/ClientMapper.java
 /home/xavi/eclipse-workspace/SpringFood/src/main/java/xavi/tech/springfood/repository/ProductRepository.java

@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,10 +27,14 @@ import lombok.ToString;
 @Table(name="order_main")
 public class Order {
 	
-	//TODO: add client too
-	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long orderId;
+    @ManyToOne
+    @JoinColumn(name="client_id", nullable=false)
+	private Client client;
+    @ManyToOne
+    @JoinColumn(name="responsible_id", nullable=false)
+	private Worker worker;
 	@Column(name="order_date", nullable = false)
 	private LocalDateTime dateTime;
 	@Column(nullable = false)

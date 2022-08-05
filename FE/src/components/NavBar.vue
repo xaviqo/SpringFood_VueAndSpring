@@ -61,11 +61,11 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-              <template v-slot:append>
+    <template v-slot:append>
         <v-btn block small plain raised dark color="green">
-            <span class="white--text text-h7">{{ pcTime }}</span>
+        <span class="white--text text-h7">{{ pcTime }}</span>
         </v-btn>
-              </template>
+    </template>
     </v-navigation-drawer>
   </nav>
 </template>
@@ -80,6 +80,7 @@
 <script>
 import App from "@/App.vue";
 export default {
+name: "pedro",
   data: () => ({
     drawer: true,
     pcTime: "",
@@ -112,7 +113,7 @@ export default {
     ],
   }),
   methods: {
-    currentTime() {
+      currentTime() {
       let date = new Date();
       let hh = date.getHours();
       let mm = date.getMinutes();
@@ -120,27 +121,25 @@ export default {
       let session = "AM";
 
       if (hh === 0) {
-        hh = 12;
+          hh = 12;
       }
       if (hh > 12) {
-        hh = hh - 12;
-        session = "PM";
+          hh = hh - 12;
+          session = "PM";
       }
 
       hh = hh < 10 ? "0" + hh : hh;
       mm = mm < 10 ? "0" + mm : mm;
       ss = ss < 10 ? "0" + ss : ss;
 
-      let time = hh + ":" + mm + ":" + ss + " " + session;
-
-      this.pcTime = time;
-    },
+      return hh + ":" + mm + ":" + ss + " " + session;
+      }
   },
   components: { App },
   mounted() {
-    this.currentTime();
+    this.pcTime = this.currentTime();
     setInterval(() => {
-      this.currentTime();
+      this.pcTime = this.currentTime();
     }, 300);
   },
 };

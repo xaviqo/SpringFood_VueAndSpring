@@ -23,16 +23,22 @@ public class Product {
 	@Column
 	private String description;
 	@Column(nullable = false)
+	private long stock;
+	@Column(nullable = false)
 	private double price;
 	@Column
 	private String imgUri;
 	
-	public Product(String name, String description, double price) {
+	public Product(String name, String description, long stock, double price, String imgUri) {
 		super();
 		this.name = name;
 		this.description = description;
+		this.stock = stock;
 		this.price = price;
+		this.imgUri = imgUri;
 	}
+
+	
 	
 	
 }

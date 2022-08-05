@@ -3,3 +3,6 @@
     <h1>This is teamview page</h1>
   </div>
 </template>
+<script>
+
+</script>

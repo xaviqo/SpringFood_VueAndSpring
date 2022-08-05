@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,20 +20,19 @@ public class OrderLine {
     
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long lineId;
-
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
 	@Column(nullable = false)
 	private long quantity;
 	@Column(nullable = false)
-	private double amount;
+	private double totalLine;
 	
-	public OrderLine(Product product, long quantity, double amount) {
+	public OrderLine(Product product, long quantity, double totalLine) {
 		super();
 		this.product = product;
 		this.quantity = quantity;
-		this.amount = amount;
+		this.totalLine = totalLine;
 	}
 	
 	

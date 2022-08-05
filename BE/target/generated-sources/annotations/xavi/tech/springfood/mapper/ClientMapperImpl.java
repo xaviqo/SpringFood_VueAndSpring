@@ -7,7 +7,7 @@ import xavi.tech.springfood.model.Client;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-08-03T17:54:11+0200",
+    date = "2022-08-04T20:21:12+0200",
     comments = "version: 1.3.1.Final, compiler: javac, environment: Java 11.0.15 (Private Build)"
 )
 @Component

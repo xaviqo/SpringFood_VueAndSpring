@@ -1,15 +1,18 @@
 <template>
+<v-row>
   <hello-world />
+  <home-slider></home-slider>
+</v-row>
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
-
+import HomeSlider from '@/components/HomeSlider.vue'
+import HelloWorld from '@/components/HelloWorld'
   export default {
-    name: 'Home',
-
+    name: 'HomeView',
     components: {
       HelloWorld,
+      HomeSlider,
     },
   }
 </script>

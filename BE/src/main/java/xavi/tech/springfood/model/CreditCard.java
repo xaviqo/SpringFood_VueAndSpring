@@ -15,22 +15,20 @@ import lombok.Data;
 @Data
 public class CreditCard {
 	
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long cardId;
-	@Column(nullable = false, length = 16)
-	private int number;
+	@Id @Column(nullable = false, length = 16)
+	private long number;
 	@Column(nullable = false, length = 2)
-	private int month;
+	private byte month;
 	@Column(nullable = false, length = 2)
-	private int year;
+	private byte year;
 	@Column(nullable = false, length = 3)
-	private String secretCode;
+	private byte secretCode;
 	
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name = "client_id")
 	private Client client;
 
-	public CreditCard(int number, int month, int year, String secretCode) {
+	public CreditCard(int number, byte month, byte year, byte secretCode) {
 		super();
 		this.number = number;
 		this.month = month;

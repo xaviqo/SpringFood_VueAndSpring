@@ -1,7 +1,7 @@
 <template>
   <v-container>
         <dashboard-cards/>
-        <!--<dashboard-table/>-->
+        <dashboard-table/>
   </v-container>
 </template>
 <script>

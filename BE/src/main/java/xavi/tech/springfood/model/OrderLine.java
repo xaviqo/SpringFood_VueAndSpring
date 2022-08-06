@@ -1,5 +1,8 @@
 package xavi.tech.springfood.model;
 
+import java.util.Objects;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,8 +17,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@Entity
 @ToString
+@Entity
 public class OrderLine {
     
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,17 +26,33 @@ public class OrderLine {
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="main_order")
+	private Order order;
 	@Column(nullable = false)
 	private long quantity;
+	//TODO: Maybe transient? this.getProduct().getPrice()*this.quantity;
 	@Column(nullable = false)
 	private double totalLine;
-	
+		
 	public OrderLine(Product product, long quantity, double totalLine) {
 		super();
 		this.product = product;
 		this.quantity = quantity;
 		this.totalLine = totalLine;
 	}
+	
+	public OrderLine(){
+		
+	}
+
+	public void setQuantity(long quantity) {
+		this.quantity = quantity;
+		if (Objects.nonNull(product)) {
+			this.totalLine = this.getProduct().getPrice()*this.quantity;
+		}
+	}
+
 	
 	
 }

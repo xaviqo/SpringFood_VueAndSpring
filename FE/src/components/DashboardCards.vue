@@ -2,7 +2,7 @@
   <v-row>
     <template v-for="card in cards">
       <v-col v-if="(card.active) && (card.id)" :key="card.id">
-        <v-card class="pa-2" outlined tile min-height="19vh">
+        <v-card class="pa-2" outlined tile min-height="20vh">
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title class="body-1 text-weight-light" v-text="card.title"/>
@@ -23,118 +23,101 @@
                 :width="12"
                 :value="card.percent"
                 color="green"
-                class="mt-5">
+                class="mt-6">
                 {{card.percent}}%
               </v-progress-circular>
               </v-col>
               <v-col>
-                <div class="mt-5 subtitle-1">
-                  <span v-if="card.remain>0">Remaining: {{card.remain}}</span>
-                  <span v-else >No remaining orders </span>
-                </div>
-                <div> </div>
-                <div class="mt-5 subtitle-1">
-                  <span>Total orders: {{card.total}}</span>
-                </div>
+                <v-simple-table class="mt-4">
+                  
+                  <thead>
+                    <tr>
+                      <th class="text-center">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Remaining 
+                        </v-sheet>
+                      </th>
+                      <th class="text-center cardLastOrder">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Total 
+                        </v-sheet>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="text-center">{{ card.remain }}</td>
+                      <td class="text-center">{{ card.total}}</td>
+                    </tr>
+                  </tbody>
+              </v-simple-table>
               </v-col>
             </v-row>
           </div>
           <!-- ### EARNINGS ### -->
           <div v-else-if="card.id === 'earnings'" class="mt-4 subtitle-1">
           <v-row>
-            <v-col cols="6" class="text-center">            
-              <span v-if="card.today>0" class="pa-4"><strong>Today: </strong>{{card.today}}€</span>
-            </v-col>
-            <v-col cols="6" class="text-center">
-              <span v-if="card.week>0" class="pa-4"><strong>Week: </strong>{{card.week}}€</span>
-            </v-col>
-            <v-divider v-if="card.orders>0"/>
-            <v-col cols="12" class="text-center">
-              <span v-if="(card.orders>0)" class="pa-4">{{card.month}}€ this month from 
-              a total of {{card.orders}} orders.</span>
-            </v-col>
+              <v-sparkline
+                auto-draw
+                class="pa-2"
+                :labels="card.labels"
+                :value="card.values"
+                :gradient="['#78c2ad', '#78c2ad', '#fff']"
+                line-width="10"
+                label-size="8"
+                type="bar"
+              ></v-sparkline>
           </v-row>
           </div>
           <!-- ### LAST_ORDER ### -->
-          <div v-else-if="card.id === 'lastorder'" class="mt-4 subtitle-1">
+          <div v-else-if="(card.id === 'lastorder') && (card.client.name)" class="ma-4">
             <v-row>
-              <v-col cols="6">
-                <div
-                align="center"
-                justify="center">
-                  <v-btn
-                  class="ma-3 body-1"
-                  color="green"
-                  elevation="0"
-                  >
-                    {{card.client.name}}
-                  </v-btn>
-                  <v-btn
-                  class="ma-3 body-2"
-                  color="green"
-                  elevation="0"
-                  x-small
-                  >
-                    <v-icon
-                    dark
-                    left
-                    class="mr-1"
-                    x-small
-                    >
-                    mdi-cellphone-text
-                    </v-icon>
-                    {{card.client.phone}}
-                  </v-btn>
-                </div>
-              </v-col>
-              <v-col cols="6">
-                <div
-                align="left"
-                  justify="center">
-                  <v-btn
-                  class="ma-1 body-2"
-                  color="white"
-                  elevation="0"
-                  x-small
-                  >
-                    <v-icon
-                    dark
-                    left
-                    class="mr-1">
-                    mdi-calendar
-                    </v-icon>
-                    {{card.order.date}}
-                  </v-btn>
-                  <v-btn
-                  class="ma-1 body-2"
-                  color="white"
-                  elevation="0"
-                  x-small
-                  >
-                    <v-icon
-                    dark
-                    left
-                    class="mr-1">
-                    mdi-checkbox-marked-circle
-                    </v-icon>
-                    {{card.order.worker.id}} {{card.order.worker.name}}
-                  </v-btn>
-                  <v-btn
-                  class="ma-1 body-2"
-                  color="white"
-                  elevation="0"
-                  x-small
-                  >
-                    <v-icon
-                    dark
-                    left
-                    class="mr-1">
-                    mdi-cash
-                    </v-icon>
-                    {{card.order.total}}€
-                  </v-btn>
-                </div>
-              </v-col>
+              <v-simple-table class="mt-4 ml-3">
+                  <thead>
+                    <tr>
+                      <th class="text-center">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Name 
+                        </v-sheet>
+                      </th>
+                      <th class="text-center">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Phone
+                        </v-sheet>
+                      </th>
+                      <th class="text-center">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Staff
+                        </v-sheet>
+                      </th>
+                      <th class="text-center">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Time
+                        </v-sheet>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ card.client.name }}</td>
+                      <td>{{ card.client.phone }}</td>
+                      <td>{{ card.order.worker.name }}</td>
+                      <td>{{ card.order.time }}</td>
+                    </tr>
+                  </tbody>
+              </v-simple-table>
             </v-row>
           </div>
         </v-card>
@@ -142,7 +125,6 @@
     </template>
   </v-row>
 </template>
-
 <script>
 export default {
   data: () => ({
@@ -158,30 +140,42 @@ export default {
       },
       {
         id: "earnings",
-        title: "Total earnings",
+        title: "Weekly earnings",
         icon: "mdi-cash-multiple",
-        today: 1,
-        week: 30,
-        month: 343.94,
-        orders: 21,
+        labels : [
+          'Mon',
+          'Tue',
+          'Wed',
+          'Thu',
+          'Fri',
+          'Sat',
+          'Sun'
+        ],
+        values: [
+          200,
+          675,
+          410,
+          390,
+          310,
+          460,
+          250
+      ],
         active: true,
       },
       {
         id: "lastorder",
-        title: "Last order",
+        title: "Last ready order",
         icon: "mdi-account-clock",
         client: {
-          name: 'Xavier',
+          name: 'Xavier QO',
           phone: '654776312',
           avatar: null
         },
         order: {
-          date: '',
+          time: '13:37 AM',
           worker: {
-            id: 12,
-            name: 'Lorem Ipsum'
-          },
-          total: 12.49
+            name: 'Pedro Ipsum'
+          }
         },
         active: true,
       },
@@ -238,3 +232,5 @@ export default {
   },
 };
 </script>
+<style>
+</style>

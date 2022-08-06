@@ -1,5 +1,6 @@
 package xavi.tech.springfood.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import xavi.tech.springfood.dto.AccountCredentialsDTO;
@@ -13,4 +14,6 @@ public interface AccountService {
 	ResponseEntity<Worker> createWorker(Worker worker);
 
 	ResponseEntity<?> getAccount(AccountCredentialsDTO account);
+
+	HttpStatus createClients();
 }

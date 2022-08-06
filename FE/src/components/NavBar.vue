@@ -82,7 +82,7 @@ import App from "@/App.vue";
 export default {
 name: "pedro",
   data: () => ({
-    drawer: true,
+    drawer: false,
     pcTime: "",
     links: [
       {

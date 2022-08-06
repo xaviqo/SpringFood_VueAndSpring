@@ -1,5 +1,6 @@
 package xavi.tech.springfood.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,5 +27,9 @@ public interface AccountController {
 	
 	@RequestMapping(path="/get")
 	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<?> getAccount(@RequestBody AccountCredentialsDTO account); 
+	ResponseEntity<?> getAccount(@RequestBody AccountCredentialsDTO account);
+	
+	@RequestMapping(path="/createClients")
+	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+	HttpStatus createClients();
 }

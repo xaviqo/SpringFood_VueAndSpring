@@ -9,9 +9,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import xavi.tech.springfood.utils.IdGenerator;
 
 @Entity
 @Table
@@ -21,9 +25,16 @@ import lombok.ToString;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account {
 	
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private long userId;
+	@Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acc_seq")
+    @GenericGenerator(
+        name = "acc_seq", 
+        strategy = "xavi.tech.springfood.utils.IdGenerator", 
+        parameters = {
+            @Parameter(name = IdGenerator.INCREMENT_PARAM, value = "50"),
+            @Parameter(name = IdGenerator.VALUE_PREFIX_PARAMETER, value = "ACC_")})
+	private String userId;
+	
     @Column(length = 40, nullable = false)
 	private String name;
     @Column(length = 12, nullable = false)

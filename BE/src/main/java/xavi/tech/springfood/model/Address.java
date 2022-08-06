@@ -24,6 +24,8 @@ public class Address {
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name = "client_id")
 	private Client client;
+    @Column(nullable = false)
+    private boolean main;
     
 	public Address(String city, String address) {
 		super();

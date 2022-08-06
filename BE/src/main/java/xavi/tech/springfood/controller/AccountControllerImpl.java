@@ -1,8 +1,7 @@
 package xavi.tech.springfood.controller;
 
-import java.util.logging.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +31,11 @@ public class AccountControllerImpl implements AccountController{
 	@Override
 	public ResponseEntity<?> getAccount(AccountCredentialsDTO account) {
 		return accountService.getAccount(account);
+	}
+
+	@Override
+	public HttpStatus createClients() {
+		return accountService.createClients();
 	}
 	
 	

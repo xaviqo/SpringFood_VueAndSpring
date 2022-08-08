@@ -1,21 +1,21 @@
 package xavi.tech.springfood.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import xavi.tech.springfood.dto.AccountCredentialsDTO;
 import xavi.tech.springfood.model.Client;
 import xavi.tech.springfood.model.Worker;
 import xavi.tech.springfood.service.AccountService;
 
+@RequiredArgsConstructor
 @RestController
 public class AccountControllerImpl implements AccountController{
 	
         
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
 
 
 	@Override

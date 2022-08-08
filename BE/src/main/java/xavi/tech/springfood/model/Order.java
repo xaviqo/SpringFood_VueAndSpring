@@ -1,7 +1,6 @@
 package xavi.tech.springfood.model;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +35,9 @@ import xavi.tech.springfood.utils.OrderIdGenerator;
 public class Order {
 	
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acc_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ord_seq")
     @GenericGenerator(
-        name = "acc_seq", 
+        name = "ord_seq", 
         strategy = "xavi.tech.springfood.utils.OrderIdGenerator", 
         parameters = {
             @Parameter(name = OrderIdGenerator.INCREMENT_PARAM, value = "50"),
@@ -78,6 +77,7 @@ public class Order {
 	}
 
 	public void setOrderLine(OrderLine orderLine) {
+		totalAmount += orderLine.getTotalLine();
 		this.orderLines.add(orderLine);
 	}
 

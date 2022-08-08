@@ -5,15 +5,18 @@ import lombok.Getter;
 @Getter
 public enum Role {
 
-	CLIENT(0,"client"),
-	WORKER(1,"worker");
+	NO_ASG(0,"noasig","NA_"),
+	CLIENT(1,"client","CL_"),
+	WORKER(2,"worker","WK_");
 	
 	private int code;
 	private String description;
+	private String prefix;
 
-	Role(int i, String description) {
+	Role(int i, String description, String prefix) {
 		this.code = i;
 		this.description = description;
+		this.prefix = prefix;
 	}
 
 	public int getCode() {

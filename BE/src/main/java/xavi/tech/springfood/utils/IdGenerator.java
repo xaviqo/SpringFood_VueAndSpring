@@ -13,6 +13,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.LongType;
 import org.hibernate.type.Type;
 
+import xavi.tech.springfood.model.Account;
 import xavi.tech.springfood.model.Client;
 import xavi.tech.springfood.model.Worker;
 
@@ -27,11 +28,7 @@ public class IdGenerator extends SequenceStyleGenerator {
     public Serializable generate(SharedSessionContractImplementor session,
             Object object) throws HibernateException {
     	
-    	if (object instanceof Worker) {
-    		valuePrefix = "WRK_";
-    	} else if (object instanceof Client) {
-    		valuePrefix = "CLI_";
-    	}
+    	if (object instanceof Account) valuePrefix = ((Account)object).getRole().getPrefix();
     	
         return valuePrefix + String.format(UUID.randomUUID().toString().substring(0, 8).toUpperCase(), 
         		super.generate(session, object));

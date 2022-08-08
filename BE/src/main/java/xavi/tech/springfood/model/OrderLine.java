@@ -31,7 +31,7 @@ public class OrderLine {
 	private Order order;
 	@Column(nullable = false)
 	private long quantity;
-	//TODO: Maybe transient? this.getProduct().getPrice()*this.quantity;
+//	TODO: Maybe transient? this.getProduct().getPrice()*this.quantity;
 	@Column(nullable = false)
 	private double totalLine;
 		

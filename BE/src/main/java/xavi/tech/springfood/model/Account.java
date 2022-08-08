@@ -31,8 +31,7 @@ public abstract class Account {
         name = "acc_seq", 
         strategy = "xavi.tech.springfood.utils.IdGenerator", 
         parameters = {
-            @Parameter(name = IdGenerator.INCREMENT_PARAM, value = "50"),
-            @Parameter(name = IdGenerator.VALUE_PREFIX_PARAMETER, value = "ACC_")})
+            @Parameter(name = IdGenerator.INCREMENT_PARAM, value = "50")})
 	private String userId;
 	
     @Column(length = 40, nullable = false)

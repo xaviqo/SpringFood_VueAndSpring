@@ -1,7 +1,6 @@
 package xavi.tech.springfood.service;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -118,7 +117,7 @@ public class AccountServiceImpl implements AccountService{
 		cli2.setPassword("word321");
 		cli2.setAddress(add2);
 		cli2.setCreditCards(cc2);
-		add1.setMain(true);
+		add2.setMain(true);
 		
 		clientRepository.save(cli1);
 		clientRepository.save(cli2);
@@ -166,6 +165,8 @@ public class AccountServiceImpl implements AccountService{
 		order1.setOrderLine(line11);
 		order1.setOrderLine(line12);
 		order1.setPaid(true);
+		order1.setDelivered(true);
+
 		
 		order2.setClient(cli2);
 		order2.setWorker(wrk1);
@@ -173,7 +174,7 @@ public class AccountServiceImpl implements AccountService{
 		line21.setProduct(pro1);
 		line21.setQuantity(3);
 		line21.setOrder(order2);
-		order1.setOrderLine(line21);
+		order2.setOrderLine(line21);
 		order2.setPaid(true);
 		order2.setDelivered(false);
 		

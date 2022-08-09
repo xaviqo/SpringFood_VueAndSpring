@@ -13,17 +13,54 @@
           </div>
           <v-divider/>
           <v-data-table
-            no-data-text="Loading today orders..."
+            loading
+            :loading="loadingOrders"
+            loading-text="Loading today orders..."
+            no-data-text="Empty orders"
             :headers="headers"
-            :items="desserts"
-            :items-per-page="10"
-            dense
+            :items="orders"
+            :items-per-page="9"
+            height="50vh"
           >
+          <template v-slot:item.paid="{ item }">
+            <v-chip
+              :color="getColor(item.paid)"
+              dark
+            >
+            <v-icon small v-if="item.paid">mdi-check-bold</v-icon>
+            <v-icon small v-else>mdi-close-thick</v-icon>
+            </v-chip>
+          </template>
+          <template v-slot:item.delivered="{ item }">
+            <v-chip
+              :color="getColor(item.delivered)"
+              class="ml-1"
+              dark
+            >
+            <v-icon small v-if="item.delivered">mdi-check-bold</v-icon>
+            <v-icon small v-else>mdi-close-thick</v-icon>
+            </v-chip>
+          </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="expandItem(item.orderId)"
+              >
+                mdi-magnify
+              </v-icon>
+              <v-icon
+                small
+                @click="expandItem(item.orderId)"
+              >
+                mdi-pencil-outline
+              </v-icon>
+            </template>
           </v-data-table>
         </v-card>
       </template>
     </v-col>
-      <dashboard-simple-table/>
+      <dashboard-simple-table :expanded-order="orderLine"/>
   </v-row>
 </template>
 <script>
@@ -32,98 +69,65 @@ import DashboardSimpleTable from "@/components/DashboardSimpleTable.vue"
     components: {
       DashboardSimpleTable
     },
-    data: () => ({
-      headers: [
-          { text: 'Order', value: 'id' },
-          { text: 'Time', value: 'time' },
-          { text: 'Client', value: 'client' },
-          { text: 'Phone', value: 'phone', sortable: false },
-          { text: 'Address', value: 'address', sortable: false },
-          { text: 'Total', value: 'total' },
-          { text: 'Actions', value: 'actions', sortable: false },
-        ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ]
-    })
+    data () {
+      return {
+        text : 'hola',
+        headers: [
+            { text: 'Order', value: 'orderId' },
+            { text: 'Time', value: 'timestamp' },
+            { text: 'Client', value: 'clientName' },
+            { text: 'Phone', value: 'clientPhone', sortable: false },
+            { text: 'Address', value: 'clientAddress', sortable: false },
+            { text: 'Total', value: 'totalAmount' },
+            { text: 'Paid', value: 'paid' },
+            { text: 'Delivered', value: 'delivered' },
+            { text: 'Expand', value: 'actions', sortable: false },
+          ],
+        orders: [
+          ],
+          loadingOrders: true,
+          orderLine : [
+          ]
+      }
+    },
+    created: async function() {
+      this.getTodayOrders();
+    },
+    methods: {
+      async getTodayOrders(){
+      this.axios
+        .get(`/api/order/getTodayOrders`)
+        .then((res) => {
+          this.orders = res.data;
+          this.loadingOrders = false;
+        })
+        .catch((e) => {
+          console.log("Error loading orders {getTodayOrders()}");
+          console.log(e);
+          this.loadingOrders = false;
+        });
+      },
+      async expandItem(orderId){
+        this.axios
+        .get(`/api/order/getLinesFromOrder/${orderId}`)
+        .then((res) => {
+          this.orderLine = res.data;
+        })
+        .catch((e) => {
+          console.log("Error loading orderLine {getLinesFromOrder(String orderId)}");
+          console.log(e);
+        });
+      },
+       getColor (bool) {
+        if (bool) return 'green'
+        else return 'red'
+      }
+    }
+
   }
 </script>
+<style>
+.v-data-footer__select {
+  visibility: hidden
+}
+</style>

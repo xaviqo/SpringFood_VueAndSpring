@@ -2,27 +2,26 @@
   <nav>
     <v-app-bar app elevation="0" dark flat short color="green">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-col cols="4">
+          <v-col cols="2">
+
         <v-toolbar-title class="overline text-h6 text-no-wrap" width="100px">
           <v-icon right class="mb-1 mr-4">mdi-leaf</v-icon>
-          <span class="font-weight-light">Spring</span>
-          <span>Food</span>
+          <span class="font-weight-light">S p r i n g </span>
+          <span>F o o d</span>
         </v-toolbar-title>
-      </v-col>
-      <v-spacer />
-      <v-tabs icons-and-text fixed-tabs>
-        <v-tab v-for="l in links" :key="l.text" :to="l.route" class="mt-1">
+          </v-col>
+      <v-tabs 
+      icons-and-text 
+      fixed-tabs
+      width="30vw"
+      ><template v-for="l in links" >
+        <v-tab v-if="l.show" y="l.text" :to="l.route" class="mt-1">
           <span class="button pt-2">{{ l.text }}</span>
           <v-icon small>{{ l.icon }}</v-icon>
         </v-tab>
+      </template>
       </v-tabs>
-      <v-spacer />
-      <v-col cols="4" class="text-right">
-        <v-btn elevation="0" outlined small tile>
-          <span>Developed by XAVI.TECH</span>
-          <v-icon right>mdi-exit-to-app</v-icon>
-        </v-btn>
-      </v-col>
+      <v-col cols="2"></v-col>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" app color="green">
       <v-layout column align-center>
@@ -80,7 +79,7 @@
 <script>
 import App from "@/App.vue";
 export default {
-name: "pedro",
+  name: "navbar",
   data: () => ({
     drawer: false,
     pcTime: "",
@@ -89,26 +88,32 @@ name: "pedro",
         icon: "mdi-home",
         text: "Home",
         route: "/",
+        show: true
       },
       {
         icon: "mdi-clipboard-text",
-        text: "Dashboard",
+        text: "Orders Board",
         route: "/admin",
+        show: true
       },
       {
         icon: "mdi-account-group",
-        text: "Team",
+        text: "Team Manager",
         route: "/team",
+        show: true
       },
       {
         icon: "mdi-food",
-        text: "Products",
+        text: "Product Manager",
         route: "/products",
+        show: true
+
       },
       {
         icon: "mdi-test-tube",
-        text: "Test",
+        text: "App Test",
         route: "/generator",
+        show: true
       },
     ],
   }),

@@ -22,4 +22,9 @@ public class OrderControllerImpl implements OrderController{
 		return orderService.getAllOrders();
 	}
 
+	@Override
+	public ResponseEntity<?> getLinesFromOrder(String orderId) {
+		return orderService.getLinesFromOrder(orderId);
+	}
+
 }

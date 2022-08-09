@@ -20,9 +20,9 @@ import lombok.ToString;
 @ToString(callSuper=true, includeFieldNames=true)
 public class Client extends Account {
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<CreditCard> creditCards;
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "client", cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Address> addresses;
 	
 	public Client(String name, String phone, String email, String password) {

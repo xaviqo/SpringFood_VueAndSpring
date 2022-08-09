@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import xavi.tech.springfood.model.Order;
-import xavi.tech.springfood.projection.dasboardOrdersProjection;
+import xavi.tech.springfood.projection.DashboardOrdersProjection;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String>{
@@ -26,7 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, String>{
 			+ "ON ord.client_id = cl.user_id INNER JOIN address ad "
 			+ "ON ord.client_id = ad.client_id "
 			+ "WHERE ad.main = true", nativeQuery = true)
-	List<dasboardOrdersProjection> getAllOrders();
+	List<DashboardOrdersProjection> getAllOrders();
 	
 	@Query(value = "SELECT ord.order_id AS orderId, "
 			+ "ord.order_date as timestamp, "
@@ -42,6 +42,6 @@ public interface OrderRepository extends JpaRepository<Order, String>{
 			+ "ON ord.client_id = ad.client_id "
 			+ "WHERE ad.main = true "
 			+ "AND ord.order_id LIKE %:prefixDateFilter", nativeQuery = true)
-	List<dasboardOrdersProjection> getTodayOrders(@Param("prefixDateFilter") String prefixDateFilter);
+	List<DashboardOrdersProjection> getTodayOrders(@Param("prefixDateFilter") String prefixDateFilter);
 
 }

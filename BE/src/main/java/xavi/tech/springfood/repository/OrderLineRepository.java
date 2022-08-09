@@ -1,9 +1,15 @@
 package xavi.tech.springfood.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import xavi.tech.springfood.model.OrderLine;
+import xavi.tech.springfood.projection.DashboardOrderLinesProjection;
 
-public interface OrderLineRepository extends CrudRepository<OrderLine, Long>{
+@Repository
+public interface OrderLineRepository extends JpaRepository<OrderLine, Long>{
 
+	List<DashboardOrderLinesProjection> findByOrderOrderId(String orderId);
 }

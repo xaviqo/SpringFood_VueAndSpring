@@ -8,4 +8,6 @@ public interface OrderService {
 	
 	ResponseEntity<?> getAllOrders();
 	
+	ResponseEntity<?> getLinesFromOrder(String orderId);
+	
 }

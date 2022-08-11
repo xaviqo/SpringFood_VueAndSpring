@@ -5,15 +5,12 @@ import org.springframework.http.ResponseEntity;
 
 import xavi.tech.springfood.dto.AccountCredentialsDTO;
 import xavi.tech.springfood.model.Client;
-import xavi.tech.springfood.model.Worker;
+
 
 public interface AccountService {
 
-	ResponseEntity<Client> createClient(Client client);
+	HttpStatus createPlaceholders();
+	ResponseEntity<?> createClient(Client client);
+	ResponseEntity<?> login(AccountCredentialsDTO account);
 	
-	ResponseEntity<Worker> createWorker(Worker worker);
-
-	ResponseEntity<?> getAccount(AccountCredentialsDTO account);
-
-	HttpStatus createClients();
 }

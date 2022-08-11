@@ -16,22 +16,22 @@ export default new Vuetify({
     themes: {
       light: {
         primary: '#78c2ad',
-        secondary: '#424242',
+        secondary: '#ff825e',
         accent: '#82B1FF',
-        error: '#FF5252',
+        error: '#ff825e',
         info: '#2196F3',
-        success: '#4CAF50',
+        success: '#78c2ad',
         warning: '#FFC107',
         green: '#78c2ad',
         red: '#ff825e'
       },
       dark: {
         primary: '#007BFF',
-        secondary: '#424242',
+        secondary: '#ff825e',
         accent: '#82B1FF',
-        error: '#FF5252',
+        error: '#ff825e',
         info: '#2196F3',
-        success: '#4CAF50',
+        success: '#4CA78c2adF50',
         warning: '#FFC107',
         green: '#78c2ad',
         red: '#ff825e'

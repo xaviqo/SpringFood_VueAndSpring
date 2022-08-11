@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum Role {
 
-	NO_ASG(0,"noasig","NA_"),
-	CLIENT(1,"client","CL_"),
-	WORKER(2,"worker","WK_");
+	NO_ASG(0,"NOASIG","NA_"),
+	CLIENT(1,"ROLE_USER","CL_"),
+	WORKER(2,"ROLE_ADMIN","WK_");
 	
 	private int code;
 	private String description;

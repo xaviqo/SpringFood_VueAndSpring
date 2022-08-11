@@ -1,9 +1,13 @@
 package xavi.tech.springfood.dto;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import xavi.tech.springfood.exception.SpringFoodError;
+import xavi.tech.springfood.exception.SpringFoodException;
 import xavi.tech.springfood.projection.DashboardOrdersProjection;
 import xavi.tech.springfood.utils.Utils;
 
@@ -36,9 +40,7 @@ public class OrderDashboardDTO {
 			dto.setDelivered(projection.getDelivered());
 			dto.setPaid(projection.getPaid());
 		} catch (Exception e) {
-			//TODO: LOG HERE
-			System.out.println(e);
-			return null;
+			throw new SpringFoodException(SpringFoodError.InternalError,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return dto;

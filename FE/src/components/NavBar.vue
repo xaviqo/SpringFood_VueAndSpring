@@ -91,6 +91,12 @@ export default {
         show: true
       },
       {
+        icon: "mdi-login",
+        text: "Log In",
+        route: "/login",
+        show: true
+      },
+      {
         icon: "mdi-clipboard-text",
         text: "Orders Board",
         route: "/admin",

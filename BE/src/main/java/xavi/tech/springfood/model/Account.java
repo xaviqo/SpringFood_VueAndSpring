@@ -12,18 +12,18 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import xavi.tech.springfood.utils.IdGenerator;
 
 @Entity
 @Table
-@Getter
-@Setter
-@ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Account {
+public class Account {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acc_seq")
@@ -40,10 +40,10 @@ public abstract class Account {
 	private String phone;
     @Column(length = 40, nullable = false, unique = true)
 	private String email;
-    @Column(length = 40, nullable = false)
-	private String password;
     @Column(nullable = false)
-	private Role role;
+	private String password;
+    @Column
+    private Role role;
     
 	public Account(String name, String phone, String email, String password, Role role) {
 		super();

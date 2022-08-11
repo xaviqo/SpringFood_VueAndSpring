@@ -1,9 +1,11 @@
 package xavi.tech.springfood.utils;
 
 import java.sql.Timestamp;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+@SuppressWarnings("deprecation")
 public class Utils {
 	
 	public static String timestampToHMString(Timestamp timestamp) {
@@ -15,5 +17,6 @@ public class Utils {
 		DecimalFormat df = new DecimalFormat("#.##");  
 		return Double.valueOf(df.format(totalAmount));
 	}
+	
 
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import xavi.tech.springfood.model.Worker;
 
 @Repository
-public interface WorkerRepository extends CrudRepository<Worker, Long>{
+public interface WorkerRepository extends CrudRepository<Worker, String>{
 	
 	<Optional>Worker findByEmail(String email);
 

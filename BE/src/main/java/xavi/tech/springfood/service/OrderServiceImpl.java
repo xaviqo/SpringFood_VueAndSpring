@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import xavi.tech.springfood.dto.OrderDashboardDTO;
 import xavi.tech.springfood.dto.OrderLineDashboardDTO;
+import xavi.tech.springfood.exception.SpringFoodError;
+import xavi.tech.springfood.exception.SpringFoodException;
 import xavi.tech.springfood.projection.DashboardOrderLinesProjection;
 import xavi.tech.springfood.projection.DashboardOrdersProjection;
 import xavi.tech.springfood.repository.OrderLineRepository;
@@ -37,10 +39,10 @@ public class OrderServiceImpl implements OrderService {
 				orderDashboardList.add(OrderDashboardDTO.projectionToDTO(projection));
 			}
 
-			return new ResponseEntity<>(orderDashboardList,HttpStatus.OK);
+			return ResponseEntity.ok().body(orderDashboardList);
 
 		} catch (Exception e) {
-			return new ResponseEntity<>(e,HttpStatus.BAD_REQUEST);
+			throw new SpringFoodException(SpringFoodError.InternalError,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -56,10 +58,10 @@ public class OrderServiceImpl implements OrderService {
 							OrderDashboardDTO.projectionToDTO(order))
 					);
 
-			return new ResponseEntity<>(allOrdersDTO,HttpStatus.OK);
+			return ResponseEntity.ok().body(allOrdersDTO);
 
 		} catch (Exception e) {
-			return new ResponseEntity<>(e,HttpStatus.BAD_REQUEST);
+			throw new SpringFoodException(SpringFoodError.InternalError,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -71,12 +73,20 @@ public class OrderServiceImpl implements OrderService {
 		List<OrderLineDashboardDTO> orderDashboardList = new ArrayList<>();
 		int boardLine = 0;
 		
-		for (DashboardOrderLinesProjection projection : lineRepository.findByOrderOrderId(orderId)) {
-			boardLine++;
-			orderDashboardList.add(OrderLineDashboardDTO.projectionToDTO(projection,boardLine));
+		try {
+			
+			for (DashboardOrderLinesProjection projection : lineRepository.findByOrderOrderId(orderId)) {
+				boardLine++;
+				orderDashboardList.add(OrderLineDashboardDTO.projectionToDTO(projection,boardLine));
+			}
+			
+			return ResponseEntity.ok().body(orderDashboardList);
+			
+		} catch (Exception e) {
+			throw new SpringFoodException(SpringFoodError.InternalError,HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		return new ResponseEntity<>(orderDashboardList,HttpStatus.OK);
+
 	}
 
 }

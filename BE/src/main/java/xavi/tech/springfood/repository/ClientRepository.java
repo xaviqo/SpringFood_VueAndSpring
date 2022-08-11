@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import xavi.tech.springfood.model.Client;
 
 @Repository
-public interface ClientRepository extends CrudRepository<Client, Long>{
+public interface ClientRepository extends CrudRepository<Client, String>{
 	
 	<Optional>Client findByEmail(String email);
 

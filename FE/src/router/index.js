@@ -5,6 +5,7 @@ import TeamView from '../views/TeamView.vue'
 import DashBoard from '../views/DashBoard.vue'
 import ProductsView from '../views/ProductsView.vue'
 import GeneratorsView from '../views/GeneratorsView.vue'
+import LogIn from '../views/LogIn.vue'
 
 
 Vue.use(VueRouter)
@@ -24,10 +25,6 @@ const routes = [
     path: '/team',
     name: 'team',
     component: TeamView
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    //component: () => import(/* webpackChunkName: "about" */ '../views/TeamView.vue')
   },
   {
     path: '/products',
@@ -39,6 +36,16 @@ const routes = [
     name: 'generator',
     component: GeneratorsView
   },
+  {
+    path: '/login',
+    name: 'login',
+    component: LogIn
+  },
+  {
+    path: '*',
+    name: 'error404',
+    component: HomeView
+  }
 ]
 
 const router = new VueRouter({

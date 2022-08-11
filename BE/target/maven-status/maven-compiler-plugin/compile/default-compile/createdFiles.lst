@@ -16,8 +16,6 @@ xavi/tech/springfood/service/AccountService.class
 xavi/tech/springfood/model/Account.class
 xavi/tech/springfood/controller/OrderController.class
 xavi/tech/springfood/model/DashboardCard.class
-xavi/tech/springfood/dto/TodayOrdersDTO.class
-xavi/tech/springfood/projection/TodayOrdersProjection.class
 xavi/tech/springfood/model/Order.class
 xavi/tech/springfood/service/AccountServiceImpl.class
 xavi/tech/springfood/SpringFoodApplication.class

@@ -78,9 +78,17 @@
 </style>
 <script>
 import App from "@/App.vue";
+import { EventBus } from '@/main.js'
 export default {
   name: "navbar",
+  created() {
+  EventBus.$on('refreshBarAfterLogin', data => {
+    console.log("SIIIIIIIIII")
+    this.refresh = data;
+  })
+  },
   data: () => ({
+    refresh: false,
     drawer: false,
     pcTime: "",
     links: [
@@ -96,21 +104,27 @@ export default {
         route: "/login",
         show: true
       },
+            {
+        icon: "mdi-truck-delivery",
+        text: "your Deliveries",
+        route: "/deliver",
+        show: true
+      },
       {
         icon: "mdi-clipboard-text",
-        text: "Orders Board",
+        text: "Board",
         route: "/admin",
         show: true
       },
       {
         icon: "mdi-account-group",
-        text: "Team Manager",
+        text: "Team",
         route: "/team",
         show: true
       },
       {
         icon: "mdi-food",
-        text: "Product Manager",
+        text: "Products",
         route: "/products",
         show: true
 
@@ -144,10 +158,31 @@ export default {
       ss = ss < 10 ? "0" + ss : ss;
 
       return hh + ":" + mm + ":" + ss + " " + session;
+      },
+      refreshNavBar() {
+        this.refresh = !this.refresh;
       }
   },
   components: { App },
   mounted() {
+
+    const SF_localStore = JSON.parse(localStorage.getItem("sf_session"));
+
+    if (localStorage.getItem("sf_session") != null){
+      this.links[0].show = SF_localStore.nav_bar.home;
+      this.links[1].show = SF_localStore.nav_bar.login;
+      this.links[2].show = SF_localStore.nav_bar._deliveries;
+      this.links[3].show = SF_localStore.nav_bar._orders_board;
+      this.links[4].show = SF_localStore.nav_bar._product_manager;
+      this.links[5].show = SF_localStore.nav_bar._team_manager;
+      this.links[6].show = SF_localStore.nav_bar._test_app;
+    }
+
+    EventBus.$on('refreshBarAfterLogin', function(r) {
+        console.log("ha llegado");
+        this.refreshNavBar();
+    })
+
     this.pcTime = this.currentTime();
     setInterval(() => {
       this.pcTime = this.currentTime();

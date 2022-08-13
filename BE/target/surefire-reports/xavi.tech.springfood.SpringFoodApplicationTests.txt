@@ -1,9 +1,12 @@
 -------------------------------------------------------------------------------
 Test set: xavi.tech.springfood.SpringFoodApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.956 s <<< FAILURE! - in xavi.tech.springfood.SpringFoodApplicationTests
-contextLoads  Time elapsed: 0.002 s  <<< ERROR!
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.406 s <<< FAILURE! - in xavi.tech.springfood.SpringFoodApplicationTests
+contextLoads  Time elapsed: 0.004 s  <<< ERROR!
 java.lang.IllegalStateException: Failed to load ApplicationContext
-Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'JWTUtil': Injection of autowired dependencies failed; nested exception is java.lang.IllegalArgumentException: Could not resolve placeholder 'security.jwt.secret' in value "${security.jwt.secret}"
-Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'security.jwt.secret' in value "${security.jwt.secret}"
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'authController' defined in file [/home/xavi/eclipse-workspace/SpringFood/target/classes/xavi/tech/springfood/controller/AuthController.class]: Unsatisfied dependency expressed through constructor parameter 1; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jwtUtil' defined in file [/home/xavi/eclipse-workspace/SpringFood/target/classes/xavi/tech/springfood/security/JwtUtil.class]: Instantiation of bean failed; nested exception is java.lang.ExceptionInInitializerError
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jwtUtil' defined in file [/home/xavi/eclipse-workspace/SpringFood/target/classes/xavi/tech/springfood/security/JwtUtil.class]: Instantiation of bean failed; nested exception is java.lang.ExceptionInInitializerError
+Caused by: java.lang.ExceptionInInitializerError
+Caused by: java.lang.IllegalStateException: Unable to invoke class method io.jsonwebtoken.impl.crypto.MacProvider#generateKey.  Ensure the necessary implementation is in the runtime classpath.
+Caused by: io.jsonwebtoken.lang.UnknownClassException: Unable to load class named [io.jsonwebtoken.impl.crypto.MacProvider] from the thread context, current, or system/application ClassLoaders.  All heuristics have been exhausted.  Class could not be found.  Have you remembered to include the jjwt-impl.jar in your runtime classpath?
 

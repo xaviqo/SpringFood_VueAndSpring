@@ -14,7 +14,7 @@
                           color="green"
                         >Sign in to SpringFood</h1>
                         <h4 class="text-center mt-4">Ensure your email for registration</h4>
-                        <v-form ref="loginRef" v-model="loginValidator">
+                        <v-form ref="loginRef" v-model="loginValidator" @submit.prevent="sendLogin()">
                           <v-text-field
                             label="Email"
                             name="Email"
@@ -87,7 +87,7 @@
                           class="text-center display-2 mb-15"
                           color="green"
                         >Create an account</h1>
-                        <v-form ref="signupRef" v-model="signupValidator">
+                        <v-form ref="signupRef" v-model="signupValidator" @submit.prevent="sendSignup()">
                             <v-row>
                             <v-col
                             cols="12"
@@ -169,6 +169,8 @@
 }
 </style>
 <script>
+import App from '@/App.vue';
+import { EventBus } from '@/plugins/bus.js';
 export default {
   data: () => ({
     step: 1,
@@ -201,8 +203,7 @@ export default {
       email: "",
       phone: "",
       name: ""
-    },
-    sfJwt: {}
+    }
   }),
   props: {
     source: String
@@ -213,6 +214,7 @@ export default {
         this.axios
         .post(`/api/account/createClient`,this.dataModel)
         .then((res) => {
+          console.log("Client created");
           console.log(res);
         })
         .catch((e) => {
@@ -226,14 +228,16 @@ export default {
         this.axios
         .post(`/api/account/login`,this.dataModel)
         .then((res) => {
-          console.log(res);
+          localStorage.setItem("sf_session",JSON.stringify(res.data));
+          EventBus.$emit('refreshBarAfterLogin', true);
+          this.$router.push('/');
         })
         .catch((e) => {
-          console.log("Error login user");
+          console.log("Error when login");
           console.log(e);
         });
       }
     }
-  }
+  }, components: { App }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <NavBar/>
+    <NavBar ref="navBarRef" />
     <v-content class="ma-4">
       <router-view/>
     </v-content>
@@ -8,6 +8,7 @@
   </v-app>
 </template>
 <script>
+import LogIn from '@/views/LogIn.vue'
 import NavBar from '@/components/NavBar.vue';
 import FooterSpring from '@/components/FooterSpring.vue';
 export default {
@@ -15,6 +16,9 @@ export default {
   components : {
     NavBar,
     FooterSpring,
-}
+    LogIn
+  }, data () {
+
+  }
 }
 </script>

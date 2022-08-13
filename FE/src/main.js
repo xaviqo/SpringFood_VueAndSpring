@@ -6,6 +6,8 @@ import '@babel/polyfill'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 
+export const EventBus = new Vue();
+
 Vue.use(VueAxios, axios)
 
 let localBEPort = 7331

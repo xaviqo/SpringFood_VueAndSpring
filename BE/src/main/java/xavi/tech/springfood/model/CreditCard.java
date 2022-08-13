@@ -19,19 +19,16 @@ public class CreditCard {
 	private int month;
 	@Column(nullable = false, length = 2)
 	private int year;
-	@Column(nullable = false, length = 3)
-	private int secretCode;
 	
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name = "client_id")
 	private Client client;
 
-	public CreditCard(long number, int i, int j, int k) {
+	public CreditCard(long n, int m, int y) {
 		super();
-		this.number = number;
-		this.month = i;
-		this.year = j;
-		this.secretCode = k;
+		this.number = n;
+		this.month = m;
+		this.year = y;
 	}
     
     

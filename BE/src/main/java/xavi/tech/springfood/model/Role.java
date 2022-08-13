@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum Role {
 
 	NO_ASG(0,"NOASIG","NA_"),
-	CLIENT(1,"ROLE_USER","CL_"),
-	WORKER(2,"ROLE_ADMIN","WK_");
+	WORKER(1,"ROLE_ADMIN","WK_"),
+	CLIENT(2,"ROLE_USER","CL_");
 	
 	private int code;
 	private String description;

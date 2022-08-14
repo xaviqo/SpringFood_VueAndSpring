@@ -170,7 +170,7 @@
 </style>
 <script>
 import App from '@/App.vue';
-import { EventBus } from '@/plugins/bus.js';
+import { EventBus } from '@/main.js'
 export default {
   data: () => ({
     step: 1,
@@ -229,7 +229,8 @@ export default {
         .post(`/api/account/login`,this.dataModel)
         .then((res) => {
           localStorage.setItem("sf_session",JSON.stringify(res.data));
-          EventBus.$emit('refreshBarAfterLogin', true);
+          this.axios.defaults.headers.common['Authorization'] = "Bearer " + res.data.token;
+          EventBus.$emit('refreshBarAfterLogin');
           this.$router.push('/');
         })
         .catch((e) => {

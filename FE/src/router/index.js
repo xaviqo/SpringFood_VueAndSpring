@@ -17,22 +17,22 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/admin',
+    path: '/admin/dashboard',
     name: 'DashBoard',
     component: DashBoard
   },
   {
-    path: '/team',
+    path: '/admin/team',
     name: 'team',
     component: TeamView
   },
   {
-    path: '/products',
+    path: '/admin/stock',
     name: 'products',
     component: ProductsView
   },
   {
-    path: '/generate',
+    path: '/admin/generate',
     name: 'generator',
     component: GeneratorsView
   },
@@ -45,6 +45,11 @@ const routes = [
     path: '*',
     name: 'error404',
     component: HomeView
+  },
+  {
+    path: '/admin/deliveries',
+    name: 'deliveries',
+    //component: WorkerDeliveries
   }
 ]
 

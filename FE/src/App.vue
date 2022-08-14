@@ -17,8 +17,6 @@ export default {
     NavBar,
     FooterSpring,
     LogIn
-  }, data () {
-
   }
 }
 </script>

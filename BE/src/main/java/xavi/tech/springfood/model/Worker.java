@@ -43,7 +43,7 @@ public class Worker extends Account{
 		
 		workerNav.put("_orders_board", orderManager);
 		workerNav.put("_team_manager", teamManager);
-		workerNav.put("_product_manager", productManager);
+		workerNav.put("_stock_manager", productManager);
 		workerNav.put("_test_app", false);		
 		
 		return workerNav;

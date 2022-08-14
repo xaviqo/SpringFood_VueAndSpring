@@ -14,8 +14,9 @@ public class Globals {
 		clientNav.put("_orders_board", false);
 		clientNav.put("_deliveries", false);
 		clientNav.put("_team_manager", false);
-		clientNav.put("_product_manager", false);
+		clientNav.put("_stock_manager", false);
 		clientNav.put("_test_app", false);
+		clientNav.put("logout", true);
 
 		return clientNav;
 		
@@ -28,6 +29,7 @@ public class Globals {
 		workerNav.put("home", true);
 		workerNav.put("login", false);
 		workerNav.put("_deliveries", true);
+		workerNav.put("logout", true);
 
 		return workerNav;
 

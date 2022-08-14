@@ -2,6 +2,7 @@ package xavi.tech.springfood;
 
 import java.sql.Timestamp;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,20 +34,6 @@ public class SpringFoodApplication implements CommandLineRunner{
 	BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
-//	@Bean
-//	public WebMvcConfigurer corsConfigurer() {
-//		return new WebMvcConfigurer() {
-//			@Override
-//			public void addCorsMappings(CorsRegistry registry) {
-//				registry
-//				.addMapping("/api/**")
-//				.allowedOrigins("http://localhost:1337")
-//				.allowedMethods("*")
-//				.allowedHeaders("*");
-//			}
-//		};
-//	}
 	
 	private ProductRepository productRepository;
 	private ClientRepository clientRepository;
@@ -55,8 +42,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-		
+				
 		Client cli1 = new Client();
 		Client cli2 = new Client();
 		Address add1 = new Address("Barelona", "Carrer Figuera, 48");
@@ -103,21 +89,29 @@ public class SpringFoodApplication implements CommandLineRunner{
 		clientRepository.save(cli1);
 		clientRepository.save(cli2);
 
-		wrk1.setTeamManager(true);
+		wrk1.setTeamManager(false);
 		wrk1.setOrderManager(true);
-		wrk1.setProductManager(true);
+		wrk1.setProductManager(false);
 		wrk1.setName("Raul");
 		wrk1.setPhone("643923654");
 		wrk1.setEmail("hey@hola.com");
 		wrk1.setPassword("pass123");
 		wrk1.setPassword(passwordEncoder().encode(wrk1.getPassword()));
 		
-		wrk2.setTeamManager(false);
+		wrk2.setTeamManager(true);
 		wrk2.setOrderManager(true);
-		wrk2.setProductManager(false);
+		wrk2.setProductManager(true);
 		wrk2.setName("Pepe");
 		wrk2.setPhone("666555444");
-		wrk2.setEmail("work@work.com");
+		wrk2.setEmail("work@work.com");//	@Bean
+//	public CorsConfigurationSource corsConfigurationSource() {
+//		CorsConfiguration configuration = new CorsConfiguration();
+//		configuration.setAllowedOrigins(Arrays.asList("http://localhost:1337"));
+//		configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//		source.registerCorsConfiguration("/**", configuration);
+//		return source;
+//	}
 		wrk2.setPassword("pass123");
 		wrk2.setPassword(passwordEncoder().encode(wrk2.getPassword()));
 

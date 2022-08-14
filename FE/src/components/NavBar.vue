@@ -43,11 +43,13 @@
           <p class="white--text subheading mt-6 text-center overline">Email</p>
         </v-flex>
       </v-layout>
-      <v-list flat two-line>
+      <v-list flat two-line
+      v-for="l in links"
+      :key="l.text"
+      >
         <v-list-item
-          v-for="l in links"
-          :key="l.text"
           dark
+          v-if="l.show"
           :to="l.route"
           color="white"
           active-class="menu-border"
@@ -83,61 +85,82 @@ export default {
   name: "navbar",
   created() {
   EventBus.$on('refreshBarAfterLogin', data => {
-    console.log("SIIIIIIIIII")
-    this.refresh = data;
+    this.loadLocalStorage()
   })
   },
   data: () => ({
     refresh: false,
     drawer: false,
     pcTime: "",
-    links: [
-      {
+    links: {
+      // TODO: CHANGE 'SHOW' TO FALSE WHEN DEPLOY
+      home: {
         icon: "mdi-home",
         text: "Home",
         route: "/",
         show: true
       },
-      {
+      login: {
         icon: "mdi-login",
         text: "Log In",
         route: "/login",
         show: true
       },
-            {
+      deliveries: {
         icon: "mdi-truck-delivery",
-        text: "your Deliveries",
-        route: "/deliver",
+        text: "Deliveries",
+        route: "/admin/deliveries",
         show: true
       },
-      {
+      dashboard: {
         icon: "mdi-clipboard-text",
         text: "Board",
-        route: "/admin",
+        route: "/admin/dashboard",
         show: true
       },
-      {
+      team:       {
         icon: "mdi-account-group",
         text: "Team",
-        route: "/team",
+        route: "/admin/team",
         show: true
       },
-      {
-        icon: "mdi-food",
-        text: "Products",
-        route: "/products",
+      stock: {
+        icon: "mdi-package-variant",
+        text: "Stock",
+        route: "/admin/stock",
         show: true
-
       },
-      {
+      logout: {
+        icon: "mdi-logout",
+        text: "logout",
+        route: "/logout",
+        show: false
+      },
+      test: {
         icon: "mdi-test-tube",
         text: "App Test",
-        route: "/generator",
-        show: true
-      },
-    ],
+        route: "/admin/generator",
+        show: false
+      }
+    },
   }),
   methods: {
+      loadLocalStorage(){
+
+        const SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
+
+        if (localStorage.getItem("sf_session") != null){
+          this.links.home.show = SF_localStorage.nav_bar.home;
+          this.links.login.show = SF_localStorage.nav_bar.login;
+          this.links.deliveries.show = SF_localStorage.nav_bar._deliveries;
+          this.links.dashboard.show = SF_localStorage.nav_bar._orders_board;
+          this.links.stock.show = SF_localStorage.nav_bar._stock_manager;
+          this.links.team.show = SF_localStorage.nav_bar._team_manager;
+          this.links.test.show = SF_localStorage.nav_bar._test_app;
+          this.links.logout.show = SF_localStorage.nav_bar.logout;
+        }
+
+      },
       currentTime() {
       let date = new Date();
       let hh = date.getHours();
@@ -165,23 +188,7 @@ export default {
   },
   components: { App },
   mounted() {
-
-    const SF_localStore = JSON.parse(localStorage.getItem("sf_session"));
-
-    if (localStorage.getItem("sf_session") != null){
-      this.links[0].show = SF_localStore.nav_bar.home;
-      this.links[1].show = SF_localStore.nav_bar.login;
-      this.links[2].show = SF_localStore.nav_bar._deliveries;
-      this.links[3].show = SF_localStore.nav_bar._orders_board;
-      this.links[4].show = SF_localStore.nav_bar._product_manager;
-      this.links[5].show = SF_localStore.nav_bar._team_manager;
-      this.links[6].show = SF_localStore.nav_bar._test_app;
-    }
-
-    EventBus.$on('refreshBarAfterLogin', function(r) {
-        console.log("ha llegado");
-        this.refreshNavBar();
-    })
+    this.loadLocalStorage();
 
     this.pcTime = this.currentTime();
     setInterval(() => {

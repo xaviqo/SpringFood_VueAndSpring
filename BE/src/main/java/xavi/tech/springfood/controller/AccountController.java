@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import xavi.tech.springfood.dto.AccountCredentialsDTO;
 import xavi.tech.springfood.model.Client;
-@CrossOrigin(origins = "http://localhost:1337", maxAge = 3600)
+
+//@CrossOrigin(origins = "http://localhost:1337", maxAge = 3600)
 @RestController
 @RequestMapping(path="/api/account")
 public interface AccountController {

@@ -83,38 +83,39 @@ import DashboardSimpleTable from "@/components/DashboardSimpleTable.vue"
             { text: 'Delivered', value: 'delivered' },
             { text: 'Expand', value: 'actions', sortable: false },
           ],
-        orders: [
-          ],
-          loadingOrders: true,
-          orderLine : [
-          ]
+        orders: [],
+        loadingOrders: true,
+        orderLine : [],
+        SF_localStorage: {},
       }
     },
     created: async function() {
+      // this.SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
+      // this.SF_localStorage.token = "Bearer "+this.SF_localStorage.token;
       this.getTodayOrders();
     },
     methods: {
       async getTodayOrders(){
       this.axios
-        .get(`/api/order/getTodayOrders`)
+        .get(`/api/admin/order/getTodayOrders`)
         .then((res) => {
           this.orders = res.data;
           this.loadingOrders = false;
         })
         .catch((e) => {
-          console.log("Error loading orders {getTodayOrders()}");
+          console.log("Error loading orders");
           console.log(e);
           this.loadingOrders = false;
         });
       },
       async expandItem(orderId){
         this.axios
-        .get(`/api/order/getLinesFromOrder/${orderId}`)
+        .get(`/api/admin/order/getLinesFromOrder/${orderId}`)
         .then((res) => {
           this.orderLine = res.data;
         })
         .catch((e) => {
-          console.log("Error loading orderLine {getLinesFromOrder(String orderId)}");
+          console.log("Error loading orderLines");
           console.log(e);
         });
       },

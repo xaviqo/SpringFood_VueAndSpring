@@ -1,8 +1,9 @@
 package xavi.tech.springfood.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,17 +44,18 @@ public class Order {
             @Parameter(name = OrderIdGenerator.INCREMENT_PARAM, value = "50"),
             @Parameter(name = IdGenerator.VALUE_PREFIX_PARAMETER, value = "SF_")})
 	private String orderId;
-    
+    @Column
+    private String stripeId;
     @ManyToOne
-    @JoinColumn(name="client_id", nullable=false)
+    @JoinColumn(name="client_id")
 	private Client client;
     @ManyToOne
-    @JoinColumn(name="responsible_id", nullable=false)
+    @JoinColumn(name="responsible_id")
 	private Worker worker;
 	@Column(name="order_date", nullable = false)
-	private Timestamp timestamp;
+	private LocalDateTime timestamp;
 	@Column(nullable = false)
-	private double totalAmount;
+	private long totalAmount;
 	@Column(nullable = false)
 	private boolean paid;
 	@Column(nullable = false)
@@ -61,24 +63,38 @@ public class Order {
 	@OneToMany(mappedBy="order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private List<OrderLine> orderLines;
+	@ManyToOne
+	@JoinColumn(name = "address_id")
+	private Address deliveryAddress;
+	@Column
+	private String deliveryTime;
 	
-	public Order(Timestamp timestamp, double totalAmount, boolean paid, boolean delivered) {
+	public Order(LocalDateTime timestamp, long totalAmount, boolean paid, boolean delivered) {
 		super();
 		this.timestamp = timestamp;
 		this.totalAmount = totalAmount;
 		this.paid = paid;
 		this.delivered = delivered;
 		this.orderLines = new ArrayList<>();
+		this.timestamp = LocalDateTime.now();
 	}
 	
 	public Order() {
 		super();
 		this.orderLines = new ArrayList<OrderLine>();
+		this.timestamp = LocalDateTime.now();
 	}
 
 	public void setOrderLine(OrderLine orderLine) {
 		totalAmount += orderLine.getTotalLine();
 		this.orderLines.add(orderLine);
+	}
+	
+	public void setStripeId(String id) {
+		if (Objects.nonNull(id)) {
+			this.stripeId = id;
+			this.paid = true;
+		}
 	}
 
 }

@@ -14,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import lombok.AllArgsConstructor;
 import xavi.tech.springfood.security.jwt.JwtAuthenticationProvider;
@@ -43,9 +42,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:1337"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD",
-                "GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:1337","https://localhost:1337"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         // setAllowCredentials(true) is important, otherwise:
         // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
         configuration.setAllowCredentials(true);
@@ -66,14 +64,21 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 		.cors()//.configurationSource(corsConfigurationSource())
 		.and()
 		.csrf().disable()
-		.authorizeRequests().antMatchers("/api/account/**").permitAll()
+		.authorizeRequests().antMatchers(
+				"/api/account/**",
+				"/api/menu/**"
+				).permitAll()
 		//            .and()
 		//            .authorizeRequests().antMatchers("/api/admin/**").hasRole("ADMIN")
 		//            .and()
 		//            .authorizeRequests().antMatchers("/api/user/**").hasRole("USER")
+		.and()
+		.authorizeRequests()
 		.anyRequest().authenticated()
 		.and()
-		.logout().permitAll().logoutUrl("/logout")
+		.logout().permitAll().logoutUrl("/api/account/logout")
+		.clearAuthentication(true)
+		.invalidateHttpSession(true)
 		.and()
 		.exceptionHandling()
 		.accessDeniedHandler(new CustomAccessDeniedHandler())

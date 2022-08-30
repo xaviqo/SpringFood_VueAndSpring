@@ -14,7 +14,7 @@ public interface DashboardOrdersProjection {
     String getClientPhone();
 	@Value("#{'(' + target.city + ') ' + target.address}")
     String getClientAddress();
-	Double getTotalAmount();
+	long getTotalAmount();
 	boolean getPaid();
 	boolean getDelivered();
 	

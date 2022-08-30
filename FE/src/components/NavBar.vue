@@ -15,7 +15,11 @@
       fixed-tabs
       width="30vw"
       ><template v-for="l in links" >
-        <v-tab v-if="l.show" y="l.text" :to="l.route" class="mt-1">
+        <v-tab v-if="l.show && l.text!='Log Out'" y="l.text" :to="l.route" class="mt-1">
+          <span class="button pt-2">{{ l.text }}</span>
+          <v-icon small>{{ l.icon }}</v-icon>
+        </v-tab>
+        <v-tab v-else-if="l.show && l.text=='Log Out'" y="l.text" @click="sendLogout()" class="mt-1">
           <span class="button pt-2">{{ l.text }}</span>
           <v-icon small>{{ l.icon }}</v-icon>
         </v-tab>
@@ -40,16 +44,31 @@
               <div class="fill-height bottom-gradient"></div>
             </v-img>
           </v-avatar>
-          <p class="white--text subheading mt-6 text-center overline">Email</p>
+          <p class="white--text subheading mt-6 text-center overline"> {{ user.name }}</p>
         </v-flex>
       </v-layout>
       <v-list flat two-line
       v-for="l in links"
       :key="l.text"
+      v-if="l.show"
       >
-        <v-list-item
+        <v-list-item v-if="l.text=='Log Out'"
+        @click="sendLogout()"
           dark
-          v-if="l.show"
+          color="white"
+          active-class="menu-border"
+        >
+          <v-list-item-action>
+            <v-icon>{{ l.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ l.text }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          v-else
+          dark
           :to="l.route"
           color="white"
           active-class="menu-border"
@@ -61,6 +80,7 @@
             <v-list-item-title>{{ l.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
       </v-list>
     <template v-slot:append>
         <v-btn block small plain raised dark color="green">
@@ -84,12 +104,15 @@ import { EventBus } from '@/main.js'
 export default {
   name: "navbar",
   created() {
-  EventBus.$on('refreshBarAfterLogin', data => {
+  EventBus.$on('refresAfterLogin', data => {
     this.loadLocalStorage()
-  })
+  });
+  JSON.parse(localStorage.getItem("sf_session")).name ? this.user.name = JSON.parse(localStorage.getItem("sf_session")).name : "Not Connected"
   },
   data: () => ({
-    refresh: false,
+    user: {
+      name: ""
+    },
     drawer: false,
     pcTime: "",
     links: {
@@ -100,46 +123,58 @@ export default {
         route: "/",
         show: true
       },
-      login: {
-        icon: "mdi-login",
-        text: "Log In",
-        route: "/login",
+      menu: {
+        icon: "mdi-food",
+        text: "Menu",
+        route: "/menu",
         show: true
+      },
+      orders: {
+        icon: "mdi-order-bool-descending-variant",
+        text: "My Orders",
+        route: "/myorders",
+        show: false
       },
       deliveries: {
         icon: "mdi-truck-delivery",
         text: "Deliveries",
         route: "/admin/deliveries",
-        show: true
+        show: false
       },
       dashboard: {
         icon: "mdi-clipboard-text",
         text: "Board",
         route: "/admin/dashboard",
-        show: true
+        show: false
       },
       team:       {
         icon: "mdi-account-group",
         text: "Team",
         route: "/admin/team",
-        show: true
+        show: false
       },
       stock: {
         icon: "mdi-package-variant",
         text: "Stock",
         route: "/admin/stock",
-        show: true
-      },
-      logout: {
-        icon: "mdi-logout",
-        text: "logout",
-        route: "/logout",
         show: false
       },
       test: {
         icon: "mdi-test-tube",
         text: "App Test",
         route: "/admin/generator",
+        show: false
+      },
+      login: {
+        icon: "mdi-login",
+        text: "Log In",
+        route: "/login",
+        show: true
+      },
+      logout: {
+        icon: "mdi-logout",
+        text: "Log Out",
+        route: "/logout",
         show: false
       }
     },
@@ -150,15 +185,39 @@ export default {
         const SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
 
         if (localStorage.getItem("sf_session") != null){
+
           this.links.home.show = SF_localStorage.nav_bar.home;
+          this.links.menu.show = SF_localStorage.nav_bar.menu;
           this.links.login.show = SF_localStorage.nav_bar.login;
           this.links.deliveries.show = SF_localStorage.nav_bar._deliveries;
           this.links.dashboard.show = SF_localStorage.nav_bar._orders_board;
           this.links.stock.show = SF_localStorage.nav_bar._stock_manager;
           this.links.team.show = SF_localStorage.nav_bar._team_manager;
+          this.links.orders.show = SF_localStorage.nav_bar.orders;
           this.links.test.show = SF_localStorage.nav_bar._test_app;
           this.links.logout.show = SF_localStorage.nav_bar.logout;
+
+        } else {
+          this.anonymousUserDefault();
         }
+
+      },
+      sendLogout() {
+        localStorage.clear();
+        this.anonymousUserDefault();
+        this.$router.push('/login');
+      },
+      anonymousUserDefault() {
+
+          this.links.home.show = true;
+          this.links.login.show = true;
+          this.links.menu.show = true;
+          this.links.deliveries.show = false;
+          this.links.dashboard.show = false;
+          this.links.stock.show = false;
+          this.links.team.show = false;
+          this.links.test.show = false;
+          this.links.logout.show = false;
 
       },
       currentTime() {
@@ -181,9 +240,6 @@ export default {
       ss = ss < 10 ? "0" + ss : ss;
 
       return hh + ":" + mm + ":" + ss + " " + session;
-      },
-      refreshNavBar() {
-        this.refresh = !this.refresh;
       }
   },
   components: { App },

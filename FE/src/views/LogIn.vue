@@ -3,6 +3,16 @@
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="8">
+            <v-card height="7vh" color="transparent" class="elevation-0">
+              <v-alert
+                dark
+                v-model="alertModel.show"
+                :color="alertModel.color"
+                :icon="alertModel.icon"
+                dismissible
+              >{{alertModel.msg}}</v-alert>
+              <br/>
+            </v-card>
             <v-card class="elevation-12 ">
               <v-window v-model="step" class="bgSpringWhite">
                 <v-window-item :value="1">
@@ -41,6 +51,7 @@
                       </v-card-text>
                       <div class="text-center mt-3">
                         <v-btn 
+                        dark
                         rounded 
                         color="green"  
                         class="ma-5"
@@ -144,6 +155,7 @@
                       </v-card-text>
                       <div class="text-center mt-3">
                         <v-btn 
+                        dark
                         rounded color="green" 
                         class="ma-5" 
                         :disabled="!signupValidator"
@@ -203,6 +215,12 @@ export default {
       email: "",
       phone: "",
       name: ""
+    },
+    alertModel: {
+      show: false,
+      msg: '',
+      color: '',
+      icon: 'mdi-looks'
     }
   }),
   props: {
@@ -214,11 +232,11 @@ export default {
         this.axios
         .post(`/api/account/createClient`,this.dataModel)
         .then((res) => {
-          console.log("Client created");
-          console.log(res);
+          console.log(res.status);
+          this.showAlert('ok','Hi '+this.dataModel.name+'! Welcome to SpringFood.')
         })
         .catch((e) => {
-          console.log("Error creating user");
+          this.showAlert(e.response.status,'Error creating user. Maybe this email is already registered')
           console.log(e);
         });
       }
@@ -230,14 +248,32 @@ export default {
         .then((res) => {
           localStorage.setItem("sf_session",JSON.stringify(res.data));
           this.axios.defaults.headers.common['Authorization'] = "Bearer " + res.data.token;
-          EventBus.$emit('refreshBarAfterLogin');
-          this.$router.push('/');
+          EventBus.$emit('refresAfterLogin');
+          this.showAlert('ok','Hi '+res.data.name+'! Now, you are connected.')
+          setTimeout(() => this.$router.push('/'), 550);
+    
         })
         .catch((e) => {
-          console.log("Error when login");
-          console.log(e);
+          this.showAlert(e.response.status,'Email not found or incorrect password')
         });
       }
+    },
+    showAlert(status, msg){
+      this.alertModel.show = true;
+      switch (status) {
+        case 'ok':
+          this.alertModel.color = 'success'
+          this.alertModel.icon = 'mdi-looks'
+          break; 
+        default:
+          this.alertModel.color = '#ff997b'
+          this.alertModel.icon = 'mdi-alert-circle'
+          if (msg == null) {
+            this.alertModel.msg = 'Unable to connect'
+          }
+          break;
+      }
+      this.alertModel.msg = msg
     }
   }, components: { App }
 }

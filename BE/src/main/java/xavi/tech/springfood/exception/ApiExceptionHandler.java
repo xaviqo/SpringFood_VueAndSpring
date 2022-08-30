@@ -19,7 +19,8 @@ public class ApiExceptionHandler {
 		error.put("code", e.getErrorCode().getCode());
 		error.put("message", e.getErrorCode().getDescription());
 		error.put("timestamp", LocalDateTime.now().toString());
-		
+		if (!e.getExtraInfo().isBlank()) error.put("extraInfo", e.getExtraInfo());
+
 		return new ResponseEntity<Map>(error, e.getHttpStatus());
 	}
 	

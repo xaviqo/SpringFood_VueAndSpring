@@ -9,7 +9,7 @@ import lombok.Setter;
 import xavi.tech.springfood.exception.SpringFoodError;
 import xavi.tech.springfood.exception.SpringFoodException;
 import xavi.tech.springfood.projection.DashboardOrdersProjection;
-import xavi.tech.springfood.utils.Utils;
+import xavi.tech.springfood.utils.SFUtils;
 
 @Getter
 @Setter
@@ -32,9 +32,9 @@ public class OrderDashboardDTO {
 		
 		try {
 			dto.setOrderId(projection.getOrderId());
-			dto.setTimestamp(Utils.timestampToHMString(projection.getTimestamp()));
+			dto.setTimestamp(SFUtils.timestampToHMString(projection.getTimestamp()));
 			dto.setClientAddress(projection.getClientAddress());
-			dto.setTotalAmount(Utils.roundTotalAmount(projection.getTotalAmount())+"€");
+			dto.setTotalAmount(String.valueOf(projection.getTotalAmount()));
 			dto.setClientName(projection.getClientName());
 			dto.setClientPhone(projection.getClientPhone());
 			dto.setDelivered(projection.getDelivered());

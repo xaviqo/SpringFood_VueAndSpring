@@ -5,9 +5,26 @@ import vuetify from './plugins/vuetify'
 import '@babel/polyfill'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
+import store from '@/store';
+import Cloudinary, { CldImage, CldVideo, CldTransformation, CldContext } from "cloudinary-vue";
+import { StripePlugin } from '@vue-stripe/vue-stripe';
+
 
 export const EventBus = new Vue();
 
+Vue.use(StripePlugin, {
+  pk: `${process.env.VUE_APP_STRIPE_PUB}`
+});
+
+Vue.use(Cloudinary, {
+  configuration: { cloudName: "xaviqo" },
+  components: {
+    CldContext,
+    CldImage, 
+    CldVideo, 
+    CldTransformation,
+  }
+});
 Vue.use(VueAxios, axios)
 
 let localBEPort = 7331
@@ -16,7 +33,9 @@ axios.defaults.baseURL='http://localhost:'+localBEPort
 Vue.config.productionTip = false
 
 new Vue({
+  store,
   router,
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+

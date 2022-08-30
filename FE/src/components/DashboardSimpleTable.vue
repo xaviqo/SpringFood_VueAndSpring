@@ -5,7 +5,7 @@
             <div>
               <v-card-title class="body-1 text-weight-light">Expanded order</v-card-title>
             </div>
-              <v-avatar size="50">
+              <v-avatar size="50" class="mr-2">
                 <v-icon color="green" large>mdi-magnify</v-icon>
               </v-avatar>
           </div>
@@ -28,15 +28,19 @@
     </v-col>
 </template>
 <script>
+import { mixins } from '@/mixins.js';
   export default {
+    mixins: [ mixins ],
     props: ['orderLine'],
     data () {
       return {
         headers: [
-            { text: 'Line', value: 'idAndDashboardId' },
-            { text: 'Product', value: 'productIdAndName' },
-            { text: 'Quantity', value: 'productQuantity',},
-            { text: 'Total', value: 'lineTotal'}
+            { text: 'Line', value: 'lineCount' },
+            { text: 'Line Id', value: 'lineId' },
+            { text: 'P. Id', value: 'productId' },
+            { text: 'P. Name', value: 'productName' },
+            { text: 'Quantity', value: 'quantity'},
+            { text: 'Total', value: 'totalLine'}
           ],
         loadingLine: false
       }

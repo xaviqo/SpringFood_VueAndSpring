@@ -9,7 +9,7 @@ import lombok.Setter;
 import xavi.tech.springfood.exception.SpringFoodError;
 import xavi.tech.springfood.exception.SpringFoodException;
 import xavi.tech.springfood.projection.DashboardOrderLinesProjection;
-import xavi.tech.springfood.utils.Utils;
+import xavi.tech.springfood.utils.SFUtils;
 
 @Getter
 @Setter
@@ -17,24 +17,28 @@ import xavi.tech.springfood.utils.Utils;
 @AllArgsConstructor
 public class OrderLineDashboardDTO {
 	
-	String idAndDashboardId;
-	String productIdAndName;
+	String dashboardId;
+	String internalId;
+	String productId;
+	String productName;
 	String productQuantity;
 	String lineTotal;
 	
-	public static OrderLineDashboardDTO projectionToDTO(DashboardOrderLinesProjection projection,int boardId) {
+	public static OrderLineDashboardDTO projectionToDTO(DashboardOrderLinesProjection projection,int boardLine) {
 		
 		OrderLineDashboardDTO dto = new OrderLineDashboardDTO();
 		
 		try {
 			
-			dto.setIdAndDashboardId(boardId+" - L"+projection.getLineId());
-			dto.setProductIdAndName("P"+projection.getProductIdName());
+			dto.setDashboardId(String.valueOf(boardLine));
+			dto.setInternalId(String.valueOf(projection.getLineId()));
+			dto.setProductId("P_"+String.valueOf(projection.getProductId()));
+			dto.setProductName(projection.getProductName());
 			dto.setProductQuantity(projection.getQuantity()+" uds.");
-			dto.setLineTotal(Utils.roundTotalAmount(projection.getTotalLine())+"€");
+			dto.setLineTotal(projection.getTotalLine()+"€");
 			
 		} catch (Exception e){
-			throw new SpringFoodException(SpringFoodError.InternalError,HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new SpringFoodException(SpringFoodError.InternalError,"Error creating OrderLineDashboardDTO",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return dto;

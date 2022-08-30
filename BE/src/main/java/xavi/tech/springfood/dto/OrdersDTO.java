@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import xavi.tech.springfood.projection.dasboardOrdersProjection;
+import xavi.tech.springfood.projection.DashboardOrdersProjection;
 
 @Getter
 @Setter
@@ -18,20 +18,20 @@ public class OrdersDTO {
 	String orderId;
 	String timestamp;
 	String clientAddress;
-	Double totalAmount;
+	long totalAmount;
 	String clientName;
 	String clientPhone;
 	boolean paid;
 	boolean delivered;
 	
-	public static OrdersDTO projectionToDTO(dasboardOrdersProjection projection) {
+	public static OrdersDTO projectionToDTO(DashboardOrdersProjection projection) {
 		OrdersDTO dto = new OrdersDTO();
 		
 		try {
 			dto.setOrderId(projection.getOrderId());
 			dto.setTimestamp(timestampToHMString(projection.getTimestamp()));
 			dto.setClientAddress(projection.getClientAddress());
-			dto.setTotalAmount(roundTotalAmount(projection.getTotalAmount()));
+			dto.setTotalAmount(projection.getTotalAmount());
 			dto.setClientName(projection.getClientName());
 			dto.setClientPhone(projection.getClientPhone());
 			dto.setDelivered(projection.getDelivered());

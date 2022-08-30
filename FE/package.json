@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
+    "@stripe/stripe-js": "^1.35.0",
+    "@vue-stripe/vue-stripe": "^4.4.4",
     "autoprefixer": "^9.8.8",
     "axios": "^0.27.2",
+    "cloudinary-vue": "^1.2.4",
     "core-js": "^3.8.3",
     "material-ui-icons": "^1.0.0-beta.36",
     "node-polyfill-webpack-plugin": "^2.0.1",
@@ -19,7 +22,8 @@
     "vue": "^2.6.14",
     "vue-axios": "^3.4.1",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.6.0"
+    "vuetify": "^2.6.0",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -32,6 +36,7 @@
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "google-fonts-webpack-plugin": "^0.4.4",
+    "vue-cli-plugin-cloudinary": "~0.0.6",
     "vue-cli-plugin-vuetify": "~2.5.1",
     "vue-template-compiler": "^2.6.14"
   },

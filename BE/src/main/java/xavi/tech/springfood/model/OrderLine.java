@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,14 +31,15 @@ public class OrderLine {
 	private Product product;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="main_order")
+    @JsonBackReference
 	private Order order;
 	@Column(nullable = false)
 	private long quantity;
 //	TODO: Maybe transient? this.getProduct().getPrice()*this.quantity;
 	@Column(nullable = false)
-	private double totalLine;
+	private long totalLine;
 		
-	public OrderLine(Product product, long quantity, double totalLine) {
+	public OrderLine(Product product, long quantity, long totalLine) {
 		super();
 		this.product = product;
 		this.quantity = quantity;
@@ -49,7 +52,7 @@ public class OrderLine {
 
 	public void setQuantity(long quantity) {
 		this.quantity = quantity;
-		if (Objects.nonNull(product)) {
+		if (Objects.nonNull(this.product)) {
 			this.totalLine = this.getProduct().getPrice()*this.quantity;
 		}
 	}

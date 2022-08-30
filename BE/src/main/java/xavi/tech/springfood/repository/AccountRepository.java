@@ -3,10 +3,12 @@ package xavi.tech.springfood.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import xavi.tech.springfood.model.Account;
 import xavi.tech.springfood.model.Role;
 
+@Repository
 public interface AccountRepository extends JpaRepository<Account, String>{
 	
 	Account findByEmail(String email);

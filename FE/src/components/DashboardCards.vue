@@ -1,19 +1,39 @@
 <template>
   <v-row>
     <template v-for="card in cards">
-      <v-col v-if="(card.active) && (card.id)" :key="card.id">
-        <v-card class="pa-2" outlined tile min-height="20vh">
+      <v-col v-if="card.active" :key="card.icon">
+        <v-card outlined tile min-height="20vh">
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
-              <v-card-title class="body-1 text-weight-light" v-text="card.title"/>
+              <v-card-title class="body-1 text-weight-light pt-4" v-text="card.title"/>
             </div>
-              <v-avatar size="50">
+            <v-spacer></v-spacer>
+            <v-divider
+              vertical
+            ></v-divider>
+            <div>
+              <v-switch
+              class="compact-switch ml-6"
+              v-model="card.switch"
+              dense
+              color="green"
+              @click="switchCard(card)"
+              flat
+              inset
+              ></v-switch>
+            </div>
+            <v-divider
+              vertical
+            ></v-divider>
+            <div>
+              <v-avatar size="50" class="pt-2 mr-4 ml-3">
                 <v-icon color="green" large>{{card.icon}}</v-icon>
               </v-avatar>
+            </div>
           </div>
           <v-divider/>
           <!-- ### DELIVERED ### -->
-          <div v-if="card.id === 'delivered'">
+          <div v-if="card.id == 'delivered'">
             <v-row>
               <v-col align="center"
               justify="center">
@@ -28,10 +48,16 @@
               </v-progress-circular>
               </v-col>
               <v-col>
-                <v-simple-table class="mt-4">
-                  
+                <v-simple-table class="mt-4 mr-4">
                   <thead>
                     <tr>
+                      <th class="text-center">
+                        <v-sheet
+                          color="green"
+                          dark>
+                        Delivered 
+                        </v-sheet>
+                      </th>
                       <th class="text-center">
                         <v-sheet
                           color="green"
@@ -50,33 +76,18 @@
                   </thead>
                   <tbody>
                     <tr>
+                      <td class="text-center">{{ card.delivered }}</td>
                       <td class="text-center">{{ card.remain }}</td>
-                      <td class="text-center">{{ card.total}}</td>
+                      <td class="text-center">{{ card.total }}</td>
                     </tr>
                   </tbody>
               </v-simple-table>
               </v-col>
             </v-row>
           </div>
-          <!-- ### EARNINGS ### -->
-          <div v-else-if="card.id === 'earnings'" class="mt-4 subtitle-1">
-          <v-row>
-              <v-sparkline
-                auto-draw
-                class="pa-2"
-                :labels="card.labels"
-                :value="card.values"
-                :gradient="['#78c2ad', '#78c2ad', '#fff']"
-                line-width="10"
-                label-size="8"
-                type="bar"
-              ></v-sparkline>
-          </v-row>
-          </div>
           <!-- ### LAST_ORDER ### -->
-          <div v-else-if="(card.id === 'lastorder') && (card.client.name)" class="ma-4">
-            <v-row>
-              <v-simple-table class="mt-4 ml-3">
+          <div v-else-if="card.id == 'lastOrder'" class="ma-4">
+              <v-simple-table>
                   <thead>
                     <tr>
                       <th class="text-center">
@@ -111,14 +122,79 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>{{ card.client.name }}</td>
-                      <td>{{ card.client.phone }}</td>
-                      <td>{{ card.order.worker.name }}</td>
-                      <td>{{ card.order.time }}</td>
+                      <td class="text-center">{{ card.info.client }}</td>
+                      <td class="text-center">{{ card.info.clientPhone }}</td>
+                      <td class="text-center">{{ card.info.responsible }}</td>
+                      <td class="text-center">{{ card.info.orderDate }}</td>
                     </tr>
                   </tbody>
               </v-simple-table>
-            </v-row>
+          </div>
+          <!-- ### EARNINGS ### -->
+          <div v-else-if="card.id == 'earnings'" class="mt-4 subtitle-1">
+              <v-sparkline
+                auto-draw
+                class="px-3"
+                :labels="card.labels"
+                :value="card.values"
+                :gradient="['#78c2ad', '#78c2ad', '#fff']"
+                :line-width="card.lw"
+                :label-size="card.ls"
+                :type="card.sparkline"
+              ></v-sparkline>
+          </div>
+          <!-- ### PRODUCT DEMAND ### -->
+          <div v-else-if="card.id == 'products'">
+          <v-card
+          class="elevation-0"
+          >
+            <div class="d-flex flex-no-wrap justify-space-between">
+              <div width="100px">
+                <v-card-title
+                  class="text-h5"
+                >{{card.product.name}}</v-card-title>
+                <div class="mt-n5">
+                  <v-simple-table>
+                    <thead>
+                      <tr>
+                        <th class="text-center">
+                          <v-sheet
+                            color="green"
+                            dark>
+                          Stock 
+                          </v-sheet>
+                        </th>
+                        <th class="text-center">
+                          <v-sheet
+                            color="green"
+                            dark>
+                          Earned
+                          </v-sheet>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="text-center">{{ card.product.stock }}</td>
+                        <td class="text-center">{{ card.product.sumTotal }}</td>
+                      </tr>
+                    </tbody>
+                </v-simple-table>
+                </div>
+              </div>
+
+              <v-avatar
+                class="ma-4"
+                size="100"
+                tile
+              >
+                <cld-image v-bind:public-id="card.product.cloud" >
+                  <cld-transformation crop="fill" width="100" height="100" gravity="center"/>
+                    <cld-transformation fetch-format="auto" />
+                </cld-image>
+              </v-avatar>
+            </div>
+          </v-card>
           </div>
         </v-card>
       </v-col>
@@ -128,86 +204,173 @@
 <script>
 export default {
   data: () => ({
-    cards: [
-      {
+    cards: {
+      delivered: {
         id: "delivered",
-        title: "Delivered orders",
+        title: "Delivered today",
         icon: "mdi-truck-delivery",
-        remain: 1,
-        total: 6,
+        remain: 0,
+        delivered: 0,
+        total: 0,
         percent: 0,
         active: true,
+        chgOption: 'Delviered today and yesterday',
+        switch: true
       },
-      {
-        id: "earnings",
-        title: "Weekly earnings",
-        icon: "mdi-cash-multiple",
-        labels : [
-          'Mon',
-          'Tue',
-          'Wed',
-          'Thu',
-          'Fri',
-          'Sat',
-          'Sun'
-        ],
-        values: [
-          200,
-          675,
-          410,
-          390,
-          310,
-          460,
-          250
-      ],
-        active: true,
-      },
-      {
-        id: "lastorder",
-        title: "Last ready order",
+      lastOrder: {
+        id: "lastOrder",
+        title: "Last order",
+        chgOption: 'Last delivered order',
         icon: "mdi-account-clock",
-        client: {
-          name: 'Xavier QO',
-          phone: '654776312',
-          avatar: null
-        },
-        order: {
-          time: '13:37 AM',
-          worker: {
-            name: 'Pedro Ipsum'
-          }
+        info: {
+          client: "",
+          clientPĥone: "",
+          responsible: "",
+          orderDate: null
         },
         active: true,
+        switch: true
       },
-      {
+      earnings: {
+        id: "earnings",
+        title: "Weekly earnings bars",
+        chgOption: "Weekly earnings line",
+        icon: "mdi-cash-multiple",
+        labels : [],
+        values: [],
+        active: true,
+        switch: true,
+        sparkline:"bar",
+        lw: 10,
+        ls: 8
+      },
+      products: {
         id: "products",
-        title: "Stock status",
+        title: "Highest demand",
+        chgOption: "Lowest demand",
         icon: "mdi-food-fork-drink",
-        lowStock: {
-          id: 0,
+        product: {
+          name: "",
+          sumTotal: 0,
+          countId: 0,
           stock: 0,
-        },
-        topSelling: {
-          id: 0,
-          sold: 0,
+          cloud: ""
         },
         active: true,
+        switch: true
       },
-    ],
+    },
   }),
   created: function() {
-    //UPDATE DELIVERED ORDERS CARD
-    this.cards.forEach(c => {
-      if (c.hasOwnProperty('percent')){
-        c.percent = 100-(Math.round((c.remain/c.total)*100));
-      }
-      if (c.hasOwnProperty('order')){
-        c.order.date = this.currentTime();
-      }
-    });
-    //CALCULATE LAST ORDER TIME
+    this.deliveredPercentCard(true);
+    this.lastReadyOrder(true);
+    this.earningsBars(true);
+    this.productDemand(true);
   },
   methods: {
+    switchCard(card){
+
+      console.log(card);
+
+      let auxOption = "";
+
+      auxOption = card.title;
+      card.title = card.chgOption;
+      card.chgOption = auxOption;
+      
+      switch (card.id) {
+        case 'earnings':
+          if (card.switch) {
+            card.sparkline = "bar";
+            card.lw = 10;
+          } else {
+            card.lw = 2;
+            card.sparkline = "trend";
+          }
+          this.earningsBars();
+          break;
+        case 'delivered':
+          this.deliveredPercentCard(card.switch);
+          break;
+        case 'lastOrder':
+          this.lastReadyOrder(card.switch);
+          break; 
+        case 'products':
+          this.productDemand(card.switch);
+          break; 
+        default:
+          console.log(card.id);
+          console.log("INVALID CARD ID");
+          break;
+      }
+    },
+    productDemand(higher){
+
+      this.axios
+        .get(`/api/admin/card/getDemandProduct/${higher}`)
+        .then((res) => {
+          this.cards.products.product = res.data;
+        })
+        .catch((e) => {
+          console.log(e);
+          console.log("Error loading PRODUCT_DEMAND card");
+        });
+
+    },
+    earningsBars(){
+
+      this.cards.earnings.labels.length = 0;
+      this.cards.earnings.values.length = 0;
+
+      this.axios
+        .get(`/api/admin/card/getEarningBars/`)
+        .then((res) => {
+          const totals = res.data;
+
+          for (const dow in totals){
+
+            this.cards.earnings.labels.push(dow.substring(0,3));
+            if (totals[dow] == 0) totals[dow] = 300
+            this.cards.earnings.values.push(totals[dow]);
+
+          }  
+
+
+        })
+        .catch((e) => {
+          console.log(e);
+          console.log("Error loading EARNINGS_BARS card");
+        });
+    },
+    lastReadyOrder(delivered){
+
+      this.axios
+        .get(`/api/admin/card/getLastReadyOrder/${delivered}`)
+        .then((res) => {
+          this.cards.lastOrder.info = res.data;
+          this.cards.lastOrder.info.orderDate = res.data.orderDate.substr(11,5);
+        })
+        .catch((e) => {
+          console.log(e);
+          console.log("Error loading LAST_ORDER card");
+        });
+    },
+    deliveredPercentCard(today){
+
+      this.axios
+        .get(`/api/admin/card/getDeliveredPercent/${today}`)
+        .then((res) => {
+          this.cards.delivered.remain = res.data.remain;
+          this.cards.delivered.delivered = res.data.delivered;
+
+          this.cards.delivered.total = this.cards.delivered.remain+this.cards.delivered.delivered;
+          this.cards.delivered.percent = 100-(Math.round((this.cards.delivered.remain/this.cards.delivered.total)*100));
+        })
+        .catch((e) => {
+          console.log(e);
+          console.log("Error loading PERCENT card");
+        });
+    },
     currentTime() {
         let date = new Date();
         let hh = date.getHours();
@@ -233,4 +396,8 @@ export default {
 };
 </script>
 <style>
+.compact-switch {
+    transform: scale(0.85);
+    transform-origin: left;
+}
 </style>

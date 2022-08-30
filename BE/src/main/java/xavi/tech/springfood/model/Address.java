@@ -9,10 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Address {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +27,7 @@ public class Address {
 	private String address;
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @JsonBackReference
 	private Client client;
     @Column(nullable = false)
     private boolean main;
@@ -31,6 +36,10 @@ public class Address {
 		super();
 		this.city = city;
 		this.address = address;
+	}
+	
+	public Address(long id) {
+		this.addressId = id;
 	}
     
     

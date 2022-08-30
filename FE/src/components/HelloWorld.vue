@@ -7,7 +7,10 @@
 
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-light my-3">
-          Welcome to SpringFood
+          <span v-if="SF_localStorage != null">
+            Hi {{hiName}}! Welcome to SpringFood
+          </span>
+          <span v-else>Welcome to SpringFood</span>
         </h1>
 
         <p class="subheading font-weight-light">
@@ -42,5 +45,20 @@
 <script>
   export default {
     name: 'HelloWorld',
+    data: () => ({
+      SF_localStorage: null,
+      hiName: ''
+    }),
+    created() {
+      this.connectedReload()
+    },
+    methods: {
+      connectedReload() {
+        if (localStorage.getItem('sf_session') != null) {
+          this.SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
+          this.hiName = this.SF_localStorage.name;
+        }
+      }
+    }
   }
 </script>

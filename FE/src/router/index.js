@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import MenuView from '../views/MenuView.vue'
 import TeamView from '../views/TeamView.vue'
 import DashBoard from '../views/DashBoard.vue'
-import MyOrders from '../views/MyOrders.vue'
+import MyProfile from '../views/MyProfile.vue'
 import ProductsView from '../views/ProductsView.vue'
 import GeneratorsView from '../views/GeneratorsView.vue'
 import LogIn from '../views/LogIn.vue'
@@ -49,9 +49,9 @@ const routes = [
     component: MenuView
   },
   {
-    path: '/myorders',
-    name: 'myorders',
-    component: MyOrders
+    path: '/client',
+    name: 'myprofile',
+    component: MyProfile
   },
   {
     path: '*',

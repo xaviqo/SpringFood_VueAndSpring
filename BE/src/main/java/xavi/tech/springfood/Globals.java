@@ -24,7 +24,7 @@ public class Globals {
 		
 		clientNav.put("home", true);
 		clientNav.put("menu", true);
-		clientNav.put("orders", true);
+		clientNav.put("cprofile", true);
 		clientNav.put("login", false);
 		clientNav.put("_orders_board", false);
 		clientNav.put("_deliveries", false);
@@ -43,7 +43,7 @@ public class Globals {
 		
 		workerNav.put("home", true);
 		workerNav.put("menu", false);
-		workerNav.put("orders", false);
+		workerNav.put("cprofile", false);
 		workerNav.put("login", false);
 		workerNav.put("_deliveries", true);
 		workerNav.put("logout", true);

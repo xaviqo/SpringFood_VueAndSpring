@@ -31,4 +31,14 @@ public class AdminCfgController {
 		System.out.println("aló");
 		return cfgService.setDashboardOpenClose(newCfg);
 	}
+	
+	@PostMapping(path="/setOpenTime")
+	public ResponseEntity<?> setOpenDeliveryAvailableTime(@RequestBody Map<String,Integer> hm) {
+		return cfgService.setOpenDeliveryAvailableTime(hm.get("h"),hm.get("m"));
+	}
+	
+	@PostMapping(path="/setCloseTime")
+	public ResponseEntity<?> setCloseTime(@RequestBody Map<String,Integer> hm) {
+		return cfgService.setCloseDeliveryAvailableTime(hm.get("h"),hm.get("m"));
+	}
 }

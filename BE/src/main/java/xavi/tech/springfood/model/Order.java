@@ -7,8 +7,10 @@ import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -64,7 +66,7 @@ public class Order {
 	@JsonManagedReference
 	private List<OrderLine> orderLines;
 	@ManyToOne
-	@JoinColumn(name = "address_id")
+	@JoinColumn(name = "address_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Address deliveryAddress;
 	@Column
 	private String deliveryTime;

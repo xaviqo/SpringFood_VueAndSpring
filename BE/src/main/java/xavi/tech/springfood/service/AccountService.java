@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import xavi.tech.springfood.dto.AccountCredentialsDTO;
+import xavi.tech.springfood.dto.AccountEditDTO;
 import xavi.tech.springfood.exception.SpringFoodError;
 import xavi.tech.springfood.exception.SpringFoodException;
 import xavi.tech.springfood.model.Account;
@@ -72,6 +74,37 @@ public class AccountService{
 
 	}
 
+	public ResponseEntity<?> getId(){
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Account account = accountRepository.findByEmail(authentication.getPrincipal().toString());
+		
+		try {
+			return new ResponseEntity<String>(account.getUserId(),HttpStatus.OK);		
+		} catch (Exception e) {
+			throw new SpringFoodException(SpringFoodError.EmailRetrievingSfId,HttpStatus.UNAUTHORIZED);
+		}
+
+
+	}
+	
+	public ResponseEntity<?> editAccount(AccountEditDTO newAccountData){
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Account account = accountRepository.findByEmail(authentication.getPrincipal().toString());
+		
+		if (account.getEmail().equals(newAccountData.getEmail()) || !accountRepository.existsByEmail(newAccountData.getEmail())) {
+			return new ResponseEntity<Integer>(accountRepository.updateAccountInfo(
+					account.getUserId(),
+					newAccountData.getName(),
+					newAccountData.getEmail(),				
+					newAccountData.getPhone())
+					,HttpStatus.OK);
+		} else {
+			throw new SpringFoodException(SpringFoodError.EmailAlreadyExists,HttpStatus.UNAUTHORIZED);
+		}
+
+	}
 
 	public ResponseEntity<?> createClient(Client client){
 
@@ -93,4 +126,5 @@ public class AccountService{
 		throw new SpringFoodException(SpringFoodError.EmailAlreadyExists,HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
+	
 }

@@ -11,10 +11,10 @@ public enum SpringFoodError {
 	/*
 	*
 	* O - SPRINGFOOD 
-	* 1 - ACCOUNTS / 11 - ROLES
+	* 1 - ACCOUNTS 
 	* 2 - PRODUCTS
 	* 6 - CLOUDINARY
-	* 8 - ORDERS / 89 - STRIPE
+	* 8 - ORDERS 
 	*
 	*/
 	
@@ -25,8 +25,12 @@ public enum SpringFoodError {
 	InvalidUser("100","User not found or wrong credentials"),
 	GeneralLoginError("101","General login error"),
 	EmailAlreadyExists("102","This email is already registered"),
+	EmailRetrievingSfId("103","Impossible to retrieve id"),
+	ErrorCreatingAddress("123","Invalid address format"),
+	ErrorRetrievingAddres("124","Error retrieving address"),
+	ErrorDeletingAddres("125","Error deleting address"),
 	ErrorCreatingClient("110","Error creating client"),
-	ErrorCreatingWorker("120","Error creaing worker"),
+	ErrorCreatingWorker("111","Error creaing worker"),
 	InvalidRole("130","Account role is not valid"),
 	InvalidJWToken("140","Invalid token"),
 	InvalidJWTokenFormat("141","Invalid token format"),

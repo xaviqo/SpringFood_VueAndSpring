@@ -2,14 +2,36 @@ package xavi.tech.springfood.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import xavi.tech.springfood.model.Address;
 import xavi.tech.springfood.projection.DeliveryDataProjection;
 
-public interface AddressRepository extends JpaRepository<Address, Long>{
+@Transactional
+public interface AddressRepository extends CrudRepository<Address, Long>{
+	
+	int deleteByAddressId(long id);
+	
+    @Modifying
+	@Query(value = "UPDATE address "
+			+ "SET main = true "
+			+ "WHERE address_id = :id", nativeQuery = true)
+	int updateToMain(@Param("id") long id);
+    
+    @Modifying
+	@Query(value = "UPDATE address "
+			+ "SET main = false "
+			+ "WHERE main = true AND client_id = :clientId", nativeQuery = true)
+    int updateMainAddressStatus(@Param("clientId") String clientId);
+	
+	
+	@Query(value = "SELECT adr.main FROM address adr "
+			+ "WHERE adr.address_id = :id", nativeQuery = true)
+	Boolean isAddressMain(long id);
 	
 	@Query(value = "SELECT adr.address AS address, "
 			+ "adr.address_id AS id, "

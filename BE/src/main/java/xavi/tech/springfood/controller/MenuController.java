@@ -1,12 +1,8 @@
 package xavi.tech.springfood.controller;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,14 +30,5 @@ public class MenuController {
 		return configService.getAllDeliveryTimes();
 	}
 	
-	@PostMapping(path="/setOpenTime")
-	public ResponseEntity<?> setOpenTime(@RequestBody Map<String,Integer> hm) {
-		return configService.setOpenTime(hm.get("h"),hm.get("m"));
-	}
-	
-	@PostMapping(path="/setCloseTime")
-	public ResponseEntity<?> setCloseTime(@RequestBody Map<String,Integer> hm) {
-		return configService.setCloseTime(hm.get("h"),hm.get("m"));
-	}
 
 }

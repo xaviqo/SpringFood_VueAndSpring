@@ -1,7 +1,6 @@
 <template>
   <nav>
     <v-app-bar app elevation="0" dark flat short color="green">
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
           <v-col cols="2">
 
         <v-toolbar-title class="overline text-h6 text-no-wrap" width="100px">
@@ -25,69 +24,23 @@
         </v-tab>
       </template>
       </v-tabs>
-      <v-col cols="2"></v-col>
+      <v-col cols="2">
+        <v-alert
+          class="mt-3 font-weight-light"
+          dense
+          width="16vw"
+          light
+          v-model="globalAlert.show"
+          dismissible
+          :color="globalAlert.color"
+          border="left"
+          elevation="0"
+          colored-border
+          :type="globalAlert.type"
+          transition="slide-y-transition"
+        >{{globalAlert.msg}}</v-alert>
+      </v-col>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" app color="green">
-      <v-layout column align-center>
-        <v-flex class="mt-5">
-          <v-avatar size="180">
-            <v-img
-              gradient="to top right, rgba(87,161,65,.10), rgba(0,0,0,.33)"
-              src="https://i.pravatar.cc/180"
-            >
-              <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular indeterminate color="grey lighten-5">
-                  </v-progress-circular>
-                </v-row>
-              </template>
-              <div class="fill-height bottom-gradient"></div>
-            </v-img>
-          </v-avatar>
-          <p class="white--text subheading mt-6 text-center overline"> {{ user.name }}</p>
-        </v-flex>
-      </v-layout>
-      <v-list flat two-line
-      v-for="l in links"
-      :key="l.text"
-      v-if="l.show"
-      >
-        <v-list-item v-if="l.text=='Log Out'"
-        @click="sendLogout()"
-          dark
-          color="white"
-          active-class="menu-border"
-        >
-          <v-list-item-action>
-            <v-icon>{{ l.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ l.text }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item
-          v-else
-          dark
-          :to="l.route"
-          color="white"
-          active-class="menu-border"
-        >
-          <v-list-item-action>
-            <v-icon>{{ l.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ l.text }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-      </v-list>
-    <template v-slot:append>
-        <v-btn block small plain raised dark color="green">
-        <span class="white--text text-h7">{{ pcTime }}</span>
-        </v-btn>
-    </template>
-    </v-navigation-drawer>
   </nav>
 </template>
 <style>
@@ -106,6 +59,9 @@ export default {
   created() {
   EventBus.$on('refresAfterLogin', data => {
     this.loadLocalStorage()
+  });
+  EventBus.$on('updateAlert', data => {
+    this.updateAlert(data);
   });
   JSON.parse(localStorage.getItem("sf_session")).name ? this.user.name = JSON.parse(localStorage.getItem("sf_session")).name : "Not Connected"
   },
@@ -129,10 +85,10 @@ export default {
         route: "/menu",
         show: true
       },
-      orders: {
-        icon: "mdi-order-bool-descending-variant",
-        text: "My Orders",
-        route: "/myorders",
+      profile: {
+        icon: "mdi-account",
+        text: "Profile",
+        route: "/client",
         show: false
       },
       deliveries: {
@@ -178,6 +134,12 @@ export default {
         show: false
       }
     },
+    globalAlert: {
+        color: "",
+        show: false,
+        type: "",
+        msg: ""
+    }
   }),
   methods: {
       loadLocalStorage(){
@@ -193,7 +155,7 @@ export default {
           this.links.dashboard.show = SF_localStorage.nav_bar._orders_board;
           this.links.stock.show = SF_localStorage.nav_bar._stock_manager;
           this.links.team.show = SF_localStorage.nav_bar._team_manager;
-          this.links.orders.show = SF_localStorage.nav_bar.orders;
+          this.links.profile.show = SF_localStorage.nav_bar.cprofile;
           this.links.test.show = SF_localStorage.nav_bar._test_app;
           this.links.logout.show = SF_localStorage.nav_bar.logout;
 
@@ -219,6 +181,15 @@ export default {
           this.links.test.show = false;
           this.links.logout.show = false;
 
+      },
+      updateAlert(model) {
+        this.globalAlert = {
+          color: model.color,
+          show: model.show,
+          type: model.type,
+          msg: model.msg
+        }
+        setTimeout(() => this.globalAlert.show = false, 1900);
       },
       currentTime() {
       let date = new Date();

@@ -11,7 +11,7 @@
                 dark
               >
               <v-icon>mdi-account</v-icon>
-                <v-toolbar-title class="ml-3">ACCOUNT INFO</v-toolbar-title>
+                <v-toolbar-title class="ml-3">Account info</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-spacer></v-spacer>
                 <div class="text-button ml-6"> 
@@ -68,16 +68,19 @@
               </v-card>
             </div>
           </v-col>
-          <v-col cols="12">
-            <div>
+          <v-col cols="12"
+          >
+            <div
+            >
               <v-app-bar
                 class="elevation-0"
                 color="green"
                 dense
                 dark
               >
-              <v-icon>mdi-map</v-icon>
-                <v-toolbar-title class="ml-3">ADDRESSES</v-toolbar-title>
+              <v-icon class="mr-3">mdi-map</v-icon>
+                <v-toolbar-title v-if="account.addresses == null">Address list is empty</v-toolbar-title>
+                <v-toolbar-title v-else>Addresses</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <div class="text-button ml-6"> 
                   <v-btn
@@ -102,8 +105,8 @@
             </div>
             <div>
               <v-card elevation="0" outlined>
-                <v-card-text>
-                  <v-row v-for="add in account.addresses" :key="add.id" v-if="add.main" class="pa-3">
+                <v-card-text v-for="add in account.addresses" :key="add.id" >
+                  <v-row v-if="add.main" class="pa-3">
                       <span>
                         <v-icon small class="mt-n1 mr-2">mdi-map-marker-outline</v-icon>
                         {{add.address}}
@@ -120,13 +123,12 @@
                           <v-icon small>mdi-trash-can-outline</v-icon>
                         </v-btn>
                         <v-btn x-small icon 
-                          @click="updateToMain(add)"
                         >
                           <v-icon small v-if="add.main">mdi-pin</v-icon>
                           <v-icon small v-else>mdi-pin-outline</v-icon>
                         </v-btn>
                   </v-row>
-                  <v-row v-for="add in account.addresses" :key="add.id" v-if="!add.main" class="pa-3">
+                  <v-row v-else-if="!add.main" class="pa-3">
                       <span>
                         <v-icon small class="mt-n1 mr-2">mdi-map-marker-outline</v-icon>
                         {{add.address}}
@@ -152,11 +154,25 @@
                 </v-card-text>
               </v-card>
             </div>
+            <v-row justify="center" class="mt-10" v-if="account.addresses == null">
+              <v-btn
+                class="white--text"
+                color="green"
+                elevation="1"
+                tile
+                x-large
+                @click="newAddress.addressDialog = true"
+              >
+              Where do you want your deliveres                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                <v-icon class="ml-2">
+                  mdi-plus
+                </v-icon>
+              </v-btn>
+            </v-row>
           </v-col>
         </v-col>
         <v-col cols="8" justify="end">
-          <v-col>
-            <div v-for="order in orders" :key="order.id" class="mb-4">
+          <v-col v-if="orders == null">
             <v-app-bar
               class="elevation-0"
               color="green"
@@ -164,7 +180,34 @@
               dark
             >
               <v-icon>mdi-pin</v-icon>
-              <v-toolbar-title class="ml-3">ID {{order.orderId}}</v-toolbar-title>
+              <v-toolbar-title class="ml-3">
+              Order list is empty
+              </v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-app-bar>
+            <v-row justify="center" class="mt-10">
+              <v-btn
+                class="white--text"
+                color="green"
+                elevation="1"
+                tile
+                x-large
+                @click="$router.push('/menu')"
+              >
+              place your first order ( ✿ ◠‿◠)
+              </v-btn>
+            </v-row>
+          </v-col>
+          <v-col v-for="order in orders" :key="order.id" v-else>
+            <div class="mb-4">
+            <v-app-bar
+              class="elevation-0"
+              color="green"
+              dense
+              dark
+            >
+              <v-icon>mdi-pin</v-icon>
+              <v-toolbar-title class="ml-3" v-if="order">ID {{order.orderId}}</v-toolbar-title>
               <v-spacer></v-spacer>
 
               <div class="text-button ml-6">
@@ -391,15 +434,14 @@
 </template>
 <script>
   import { mixins } from '@/mixins.js';
-  import { EventBus } from '@/main.js'
+  import { EventBus } from '@/main.js';
     export default {
       mixins: [ mixins ],
       data () {
         return {
-          orders: [{}],
+          orders: null,
           account: {
-            addresses: {
-            },
+            addresses: null,
             edit: {
               email: "",
               name: "",
@@ -478,7 +520,9 @@
                   show: true,
                   type: "succed",
                   msg: "Account info edited"
-                });           
+                });
+                localStorage.setItem("sf_session",JSON.stringify(res.data));
+                this.axios.defaults.headers.common['Authorization'] = "Bearer " + res.data.token;     
               }
             })
             .catch((e) => {
@@ -642,10 +686,15 @@
           this.axios
             .get(`/api/client/address/getAddress`)
             .then((res) => {
+              if (res.status == 200 && res.data.length > 0){
                 this.account.addresses = res.data;
                 this.account.phone = res.data[0].phone;
+              } else {
+                this.account.addresses = null;
+                this.account.phone = "No phone added"
+              }
             })
-            .catch(() => {
+            .catch((e) => {
               this.showAlert({
                 color: "red",
                 show: true,
@@ -660,10 +709,14 @@
           this.axios
             .get(`/api/client/order/getOrders`)
             .then((res) => {
-              this.orders = res.data;
-              this.orders.forEach(order => {
-                order.lines = order.orderLines.length
-              })
+              if (res.status == 200 && res.data.length > 0){
+                this.orders = res.data;
+                this.orders.forEach(order => {
+                  order.lines = order.orderLines.length
+                })
+              } else {
+                this.orders = null;
+              }
             }).catch((e) => {
               this.showAlert({
                 color: "red",
@@ -681,19 +734,12 @@
         },
         loadLocalStorageAndId(){
 
-          const SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
-
-          if (localStorage.getItem("sf_session") != null){
-
-            this.account.name = SF_localStorage.name;
-            this.account.email = SF_localStorage.email;
-            this.account.phone = ""
-
-            this.axios
+          this.axios
             .get(`/api/account/getId`)
             .then((res) => {
               this.account.id = res.data;
             }).catch((e) => {
+              console.log(e);
               this.showAlert({
                 color: "red",
                 show: true,
@@ -702,9 +748,17 @@
               });
             });
 
+          const SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
+
+          if (localStorage.getItem("sf_session") != null){
+
+            this.account.name = SF_localStorage.name;
+            this.account.email = SF_localStorage.email;
+            this.account.phone = ""
+
           }
 
         },
       }
     }
-  </script>
+</script>

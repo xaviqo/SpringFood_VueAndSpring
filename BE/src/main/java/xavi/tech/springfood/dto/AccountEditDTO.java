@@ -11,8 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AccountEditDTO {
 	
-	String email;
 	String name;
+	String email;
 	String phone;
 
 }

@@ -54,16 +54,18 @@
 <script>
 import App from "@/App.vue";
 import { EventBus } from '@/main.js'
+
 export default {
   name: "navbar",
   created() {
+  
   EventBus.$on('refresAfterLogin', data => {
     this.loadLocalStorage()
   });
   EventBus.$on('updateAlert', data => {
     this.updateAlert(data);
   });
-  JSON.parse(localStorage.getItem("sf_session")).name ? this.user.name = JSON.parse(localStorage.getItem("sf_session")).name : "Not Connected"
+
   },
   data: () => ({
     user: {
@@ -147,7 +149,6 @@ export default {
         const SF_localStorage = JSON.parse(localStorage.getItem("sf_session"));
 
         if (localStorage.getItem("sf_session") != null){
-
           this.links.home.show = SF_localStorage.nav_bar.home;
           this.links.menu.show = SF_localStorage.nav_bar.menu;
           this.links.login.show = SF_localStorage.nav_bar.login;

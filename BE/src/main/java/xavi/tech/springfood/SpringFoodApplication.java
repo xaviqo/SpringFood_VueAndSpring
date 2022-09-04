@@ -47,6 +47,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 				
 		Client cli1 = new Client();
 		Client cli2 = new Client();
+		Client cli3 = new Client();
 		Address add1 = new Address("Barelona", "Carrer Figuera, 48");
 		Address add12 = new Address("Girona", "Plç. Catalunya, 123");
 		Address add2 = new Address("Palau", "Av. Catalunya, 22");
@@ -108,9 +109,15 @@ public class SpringFoodApplication implements CommandLineRunner{
 		cli2.setPassword(passwordEncoder().encode(cli2.getPassword()));
 		cli2.setAddress(add2);
 		add2.setMain(true);
+		
+		cli3.setName("Pedro");
+		cli3.setPhone("654654645");
+		cli3.setEmail("hey@you.net");
+		cli3.setPassword(passwordEncoder().encode("pass123"));
 
 		clientRepository.save(cli1);
 		clientRepository.save(cli2);
+		clientRepository.save(cli3);
 
 		wrk1.setTeamManager(false);
 		wrk1.setOrderManager(true);

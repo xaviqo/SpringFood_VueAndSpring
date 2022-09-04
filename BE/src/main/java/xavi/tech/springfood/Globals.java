@@ -10,13 +10,13 @@ import org.springframework.context.annotation.PropertySources;
 public class Globals {
 	
 	//@Value("${cloudinary.apiname}")
-	public static String CLOUD_API_NAME="";
+	public static String CLOUD_API_NAME="xaviqo";
 	//@Value("${cloudinary.apikey}")
-	public static String CLOUD_API_KEY="";
+	public static String CLOUD_API_KEY="454356868378879";
 	//@Value("${cloudinary.apisec}")
-	public static String CLOUD_API_SEC="";
+	public static String CLOUD_API_SEC="Uik2ikc0KpU2hLpfy3esQRk_TY4";
 	//@Value("${stripe.sec}")
-	public static String STRIPE_API_SEC="";
+	public static String STRIPE_API_SEC="sk_test_51LXY5zKpmz3t5YGvBrztUwZJUsMGLEWMJ0egDaOXgqpXT1AO7MX4hnctxP4mBqjRVzm2fooTFDY7qkH7Ji5Bnm8E00BZtIM0YS";
 		
 	public static Map<String, Boolean> getClientNavBar(){
 		

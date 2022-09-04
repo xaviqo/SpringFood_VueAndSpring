@@ -8,6 +8,11 @@ import axios from 'axios'
 import store from '@/store';
 import Cloudinary, { CldImage, CldVideo, CldTransformation, CldContext } from "cloudinary-vue";
 import { StripePlugin } from '@vue-stripe/vue-stripe';
+import setAuthHeader from './setAuthHeader';
+
+
+const ls = JSON.parse(localStorage.getItem("sf_session"));
+if (ls) setAuthHeader(ls.token);
 
 
 export const EventBus = new Vue();
@@ -27,7 +32,7 @@ Vue.use(Cloudinary, {
 });
 Vue.use(VueAxios, axios)
 
-let localBEPort = 7331
+const localBEPort = 7331
 axios.defaults.baseURL='http://localhost:'+localBEPort
 
 Vue.config.productionTip = false

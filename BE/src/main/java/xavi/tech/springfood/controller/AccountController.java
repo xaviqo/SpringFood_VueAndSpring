@@ -22,7 +22,6 @@ import xavi.tech.springfood.service.AddressService;
 public class AccountController{
         
     private final AccountService accountService;
-    private final AddressService addressService;
     
     @PreAuthorize("permitAll()")
     @PostMapping(path="/createClient")

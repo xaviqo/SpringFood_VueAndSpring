@@ -182,7 +182,8 @@
 </style>
 <script>
 import App from '@/App.vue';
-import { EventBus } from '@/main.js'
+import { EventBus } from '@/main.js';
+import setAuthHeader from '@/setAuthHeader';
 export default {
   data: () => ({
     step: 1,
@@ -247,7 +248,7 @@ export default {
         .post(`/api/account/login`,this.dataModel)
         .then((res) => {
           localStorage.setItem("sf_session",JSON.stringify(res.data));
-          this.axios.defaults.headers.common['Authorization'] = "Bearer " + res.data.token;
+          setAuthHeader(res.data.token);
           EventBus.$emit('refresAfterLogin');
           this.showAlert('ok','Hi '+res.data.name+'! Now, you are connected.')
           setTimeout(() => this.$router.push('/'), 550);

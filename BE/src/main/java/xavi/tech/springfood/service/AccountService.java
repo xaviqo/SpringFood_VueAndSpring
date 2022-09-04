@@ -3,6 +3,7 @@ package xavi.tech.springfood.service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,41 +36,22 @@ public class AccountService{
 	private final JwtUtils jwtUtil;
 	private final AccountRepository accountRepository;
 	private final ClientRepository clientRepository;
-	
+
 	/*
 	 * SIGNOUT EXAMPLE HERE @ 02:20
 	 * https://www.youtube.com/watch?v=ZBeyy4Q3nIw
 	 */
-	
+
 	public ResponseEntity<Map<String,Object>> login(AccountCredentialsDTO accountDto){
-		
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(accountDto.getEmail(),accountDto.getPassword());
-		
-		Authentication login = authenticationManager.authenticate(token);
-				
-		if (login.isAuthenticated()) {
-			
-			Account account = accountRepository.findByEmail(accountDto.getEmail());
-			String loginToken = jwtUtil.generate(accountDto.getEmail());
-			Map<String,Object> res = new HashMap<>();
-			
-			res.put("token", loginToken);
-			res.put("email", login.getPrincipal().toString());
-			res.put("name", account.getName());
-			res.put("role",account.getRole().getDescription());
-			res.put("moment", LocalDateTime.now().toString());
-			
-			// NAV BAR CONSTRUCTION - If its a worker, nav_bar is not Account.class default
-			if (Role.WORKER.equals(account.getRole())) {
-				account = (Worker) account;
-			}
-			
-			res.put("nav_bar", account.getNavBar());
-			
+
+		Map<String,Object> res = loginStorage(accountDto);
+
+		if (Objects.nonNull(res)) {
+
 			return new ResponseEntity<Map<String,Object>>(res,HttpStatus.OK);
-			
+
 		}
-		
+
 		throw new SpringFoodException(SpringFoodError.InvalidJWToken,HttpStatus.UNAUTHORIZED);
 
 	}
@@ -78,7 +60,7 @@ public class AccountService{
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Account account = accountRepository.findByEmail(authentication.getPrincipal().toString());
-		
+
 		try {
 			return new ResponseEntity<String>(account.getUserId(),HttpStatus.OK);		
 		} catch (Exception e) {
@@ -87,23 +69,29 @@ public class AccountService{
 
 
 	}
-	
+
 	public ResponseEntity<?> editAccount(AccountEditDTO newAccountData){
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Account account = accountRepository.findByEmail(authentication.getPrincipal().toString());
-		
+
 		if (account.getEmail().equals(newAccountData.getEmail()) || !accountRepository.existsByEmail(newAccountData.getEmail())) {
-			return new ResponseEntity<Integer>(accountRepository.updateAccountInfo(
+
+			int result = accountRepository.updateAccountInfo(
 					account.getUserId(),
 					newAccountData.getName(),
 					newAccountData.getEmail(),				
-					newAccountData.getPhone())
-					,HttpStatus.OK);
-		} else {
-			throw new SpringFoodException(SpringFoodError.EmailAlreadyExists,HttpStatus.UNAUTHORIZED);
-		}
+					newAccountData.getPhone());
 
+			if (result == 1) {	
+
+				return new ResponseEntity<Map<String, Object>>(
+						loginStorage(AccountCredentialsDTO.builder().email(newAccountData.getEmail()).password(account.getPassword()).build())
+						,HttpStatus.OK);
+
+			} 
+		}
+		throw new SpringFoodException(SpringFoodError.EmailAlreadyExists,HttpStatus.UNAUTHORIZED);
 	}
 
 	public ResponseEntity<?> createClient(Client client){
@@ -112,10 +100,10 @@ public class AccountService{
 		if (!accountRepository.existsByEmail(client.getEmail())) {
 
 			try {
-				
+
 				client.setPassword(encoder.encode(client.getPassword()));
 				clientRepository.save(client);
-				
+
 				return new ResponseEntity<Client>(HttpStatus.CREATED);
 			} catch (Exception e) {
 				throw new SpringFoodException(SpringFoodError.ErrorCreatingClient,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -126,5 +114,38 @@ public class AccountService{
 		throw new SpringFoodException(SpringFoodError.EmailAlreadyExists,HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
-	
+
+	public Map<String, Object> loginStorage(AccountCredentialsDTO accountDto){
+
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(accountDto.getEmail(),accountDto.getPassword());
+
+		Authentication login = authenticationManager.authenticate(token);
+
+		if (login.isAuthenticated()) {
+
+			Account account = accountRepository.findByEmail(accountDto.getEmail());
+			String loginToken = jwtUtil.generate(accountDto.getEmail());
+			Map<String,Object> res = new HashMap<>();
+
+			res.put("token", loginToken);
+			res.put("email", login.getPrincipal().toString());
+			res.put("name", account.getName());
+			res.put("role",account.getRole().getDescription());
+			res.put("moment", LocalDateTime.now().toString());
+
+			// NAV BAR CONSTRUCTION - If its a worker, nav_bar is not Account.class default
+			if (Role.WORKER.equals(account.getRole())) {
+				account = (Worker) account;
+			}
+
+			res.put("nav_bar", account.getNavBar());
+
+			return res;
+
+		}
+
+		return null;
+
+	}
+
 }

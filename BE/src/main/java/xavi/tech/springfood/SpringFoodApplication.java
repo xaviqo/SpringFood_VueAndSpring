@@ -119,18 +119,20 @@ public class SpringFoodApplication implements CommandLineRunner{
 		clientRepository.save(cli2);
 		clientRepository.save(cli3);
 
-		wrk1.setTeamManager(false);
 		wrk1.setOrderManager(true);
 		wrk1.setProductManager(false);
+		wrk1.setAdminSfCfg(false);
+		wrk1.setDeliverManager(true);
 		wrk1.setName("Raul");
 		wrk1.setPhone("643923654");
 		wrk1.setEmail("hey@hola.com");
 		wrk1.setPassword("pass123");
 		wrk1.setPassword(passwordEncoder().encode(wrk1.getPassword()));
 		
-		wrk2.setTeamManager(true);
 		wrk2.setOrderManager(true);
 		wrk2.setProductManager(true);
+		wrk2.setAdminSfCfg(true);
+		wrk2.setDeliverManager(true);
 		wrk2.setName("Pepe");
 		wrk2.setPhone("666555444");
 		wrk2.setEmail("work@work.com");

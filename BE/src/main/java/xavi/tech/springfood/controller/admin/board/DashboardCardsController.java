@@ -1,4 +1,4 @@
-package xavi.tech.springfood.controller.admin;
+package xavi.tech.springfood.controller.admin.board;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +14,7 @@ import xavi.tech.springfood.service.OrderService;
 @RestController
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping(path="/api/admin/card")
-public class AdminBoardCardsController {
+public class DashboardCardsController {
 
 	private final OrderService orderService;
 

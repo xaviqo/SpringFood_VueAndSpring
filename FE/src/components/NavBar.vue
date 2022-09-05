@@ -105,22 +105,16 @@ export default {
         route: "/admin/dashboard",
         show: false
       },
-      team:       {
-        icon: "mdi-account-group",
-        text: "Team",
-        route: "/admin/team",
-        show: false
-      },
-      stock: {
-        icon: "mdi-package-variant",
-        text: "Stock",
-        route: "/admin/stock",
-        show: false
-      },
       test: {
         icon: "mdi-test-tube",
         text: "App Test",
         route: "/admin/generator",
+        show: false
+      },
+      cfg: {
+        icon: "mdi-cog",
+        text: "Configure",
+        route: "/admin/config",
         show: false
       },
       login: {
@@ -152,12 +146,11 @@ export default {
           this.links.home.show = SF_localStorage.nav_bar.home;
           this.links.menu.show = SF_localStorage.nav_bar.menu;
           this.links.login.show = SF_localStorage.nav_bar.login;
-          this.links.deliveries.show = SF_localStorage.nav_bar._deliveries;
+          this.links.deliveries.show = SF_localStorage.nav_bar._deliver_manager;
           this.links.dashboard.show = SF_localStorage.nav_bar._orders_board;
-          this.links.stock.show = SF_localStorage.nav_bar._stock_manager;
-          this.links.team.show = SF_localStorage.nav_bar._team_manager;
           this.links.profile.show = SF_localStorage.nav_bar.cprofile;
           this.links.test.show = SF_localStorage.nav_bar._test_app;
+          this.links.cfg.show = SF_localStorage.nav_bar._sf_cfg;
           this.links.logout.show = SF_localStorage.nav_bar.logout;
 
         } else {
@@ -177,9 +170,8 @@ export default {
           this.links.menu.show = true;
           this.links.deliveries.show = false;
           this.links.dashboard.show = false;
-          this.links.stock.show = false;
-          this.links.team.show = false;
           this.links.test.show = false;
+          this.links.cfg.show = false;
           this.links.logout.show = false;
 
       },

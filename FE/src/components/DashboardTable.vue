@@ -220,6 +220,7 @@
 </template>
 <script>
 import DashboardSimpleTable from "@/components/DashboardSimpleTable.vue"
+import { EventBus } from '@/main.js';
 import { mixins } from '@/mixins.js';
   export default {
     mixins: [ mixins ],
@@ -303,8 +304,12 @@ import { mixins } from '@/mixins.js';
           this.setDmyOnDate(this.configure.closing);
         })
         .catch((e) => {
-          console.log("Error loading dashboard times cfg");
-          console.log(e);
+          this.showAlert({
+              color: "red",
+              show: true,
+              type: "error",
+              msg: "Error loading times"
+            });
         });
       },
       async spanOfTimeSaveOrClose(save){
@@ -326,18 +331,32 @@ import { mixins } from '@/mixins.js';
             this.axios
               .post(`/api/admin/cfg/setDbOpenClose`,newCfg)
               .then((res) => {
-                console.log(res);
                 this.configureTimes();
                 this.getTodayOrders();
+                this.showAlert({
+                  color: "green",
+                  show: true,
+                  type: "success",
+                  msg: "Time successfully changed"
+                });
               })
               .catch((e) => {
-                console.log("Error saving dashboard times cfg");
-                console.log(e);
+                this.showAlert({
+                  color: "red",
+                  show: true,
+                  type: "error",
+                  msg: "Error saving time"
+                });
                 this.configureTimes();
               });
             
           } else {
-            console.log("Invalid values for dashboard times cfg");
+            this.showAlert({
+              color: "red",
+              show: true,
+              type: "error",
+              msg: "Invalid time values"
+            });
             this.configureTimes();
           }
 
@@ -390,8 +409,12 @@ import { mixins } from '@/mixins.js';
           this.loadingOrders = false;
         })
         .catch((e) => {
-          console.log("Error loading orders");
-          console.log(e);
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error loading orders"
+          });
           this.loadingOrders = false;
         });
       },
@@ -413,14 +436,23 @@ import { mixins } from '@/mixins.js';
 
         })
         .catch((e) => {
-          console.log("Error loading orderLines");
-          console.log(e);
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error expanding order"
+          });
         });
       },
        getColor (bool) {
         if (bool) return 'green'
         else return 'red'
-      }
+      },
+      showAlert(model){
+          EventBus.$emit('updateAlert',
+            model
+          );
+        },
     }
 
   }

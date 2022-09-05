@@ -19,7 +19,7 @@ import xavi.tech.springfood.service.AddressService;
 @AllArgsConstructor
 @RestController
 @RequestMapping(path="/api/account")
-public class AccountController{
+public class LogInSignInController{
         
     private final AccountService accountService;
     

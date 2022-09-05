@@ -739,7 +739,6 @@
             .then((res) => {
               this.account.id = res.data;
             }).catch((e) => {
-              console.log(e);
               this.showAlert({
                 color: "red",
                 show: true,

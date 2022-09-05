@@ -202,6 +202,7 @@
   </v-row>
 </template>
 <script>
+import { EventBus } from '@/main.js';
 export default {
   data: () => ({
     cards: {
@@ -299,8 +300,12 @@ export default {
           this.productDemand(card.switch);
           break; 
         default:
-          console.log(card.id);
-          console.log("INVALID CARD ID");
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error, invalid card ID"
+          });
           break;
       }
     },
@@ -312,8 +317,12 @@ export default {
           this.cards.products.product = res.data;
         })
         .catch((e) => {
-          console.log(e);
-          console.log("Error loading PRODUCT_DEMAND card");
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error loading demand card"
+          });
         });
 
     },
@@ -334,12 +343,14 @@ export default {
             this.cards.earnings.values.push(totals[dow]);
 
           }  
-
-
         })
         .catch((e) => {
-          console.log(e);
-          console.log("Error loading EARNINGS_BARS card");
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error loading sparklines card"
+          });
         });
     },
     lastReadyOrder(delivered){
@@ -351,8 +362,12 @@ export default {
           this.cards.lastOrder.info.orderDate = res.data.orderDate.substr(11,5);
         })
         .catch((e) => {
-          console.log(e);
-          console.log("Error loading LAST_ORDER card");
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error loading last order card"
+          });
         });
     },
     deliveredPercentCard(today){
@@ -367,31 +382,19 @@ export default {
           this.cards.delivered.percent = 100-(Math.round((this.cards.delivered.remain/this.cards.delivered.total)*100));
         })
         .catch((e) => {
-          console.log(e);
-          console.log("Error loading PERCENT card");
+          this.showAlert({
+            color: "red",
+            show: true,
+            type: "error",
+            msg: "Error loading percent card"
+          });
         });
     },
-    currentTime() {
-        let date = new Date();
-        let hh = date.getHours();
-        let mm = date.getMinutes();
-        let ss = date.getSeconds();
-        let session = "AM";
-
-        if (hh === 0) {
-            hh = 12;
-        }
-        if (hh > 12) {
-            hh = hh - 12;
-            session = "PM";
-        }
-
-        hh = hh < 10 ? "0" + hh : hh;
-        mm = mm < 10 ? "0" + mm : mm;
-        ss = ss < 10 ? "0" + ss : ss;
-
-        return hh + ":" + mm + ":" + ss + " " + session;
-        }
+    showAlert(model){
+      EventBus.$emit('updateAlert',
+        model
+      );
+    },
   },
 };
 </script>

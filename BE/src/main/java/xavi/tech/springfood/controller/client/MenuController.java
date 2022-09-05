@@ -1,4 +1,4 @@
-package xavi.tech.springfood.controller;
+package xavi.tech.springfood.controller.client;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

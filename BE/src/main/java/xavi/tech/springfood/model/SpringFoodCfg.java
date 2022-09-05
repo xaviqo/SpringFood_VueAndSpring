@@ -21,6 +21,8 @@ public class SpringFoodCfg {
 	private int cfgId;
 	@Column
 	private int minutesTimeSlot;
+	@Column 
+	private String sfLocation;
 	@Column
 	private LocalTime firstDeliveryAvailable;
 	@Column

@@ -19,9 +19,10 @@ public class Worker extends Account{
 	
 	private static final long serialVersionUID = 2906981394534301731L;
 	
-	private boolean teamManager;
+	private boolean deliverManager;
 	private boolean orderManager;
 	private boolean productManager;
+	private boolean adminSfCfg;
 	
 	@Transient
 	private boolean ready;
@@ -42,8 +43,8 @@ public class Worker extends Account{
 		workerNav.putAll(Globals.getWorkerNavBar());
 		
 		workerNav.put("_orders_board", orderManager);
-		workerNav.put("_team_manager", teamManager);
-		workerNav.put("_stock_manager", productManager);
+		workerNav.put("_sf_cfg", adminSfCfg);
+		workerNav.put("_deliver_manager", deliverManager);
 		workerNav.put("_test_app", false);		
 		
 		return workerNav;

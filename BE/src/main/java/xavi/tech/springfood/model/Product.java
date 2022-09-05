@@ -36,6 +36,8 @@ public class Product {
 	private String type;
 	@Column 
 	private boolean useStock;
+	@Column
+	private boolean active;
 	
 	
 	public Product(long productId, long price) {

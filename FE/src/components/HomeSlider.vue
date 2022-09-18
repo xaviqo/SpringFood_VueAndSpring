@@ -1,5 +1,5 @@
 <template>
-  <v-row align-content="center" justify="center">
+  <!-- <v-row align-content="center" justify="center">
     <v-col></v-col>
     <v-col>
     <v-carousel
@@ -35,32 +35,32 @@
     </v-carousel>
     </v-col>
     <v-col></v-col>
-  </v-row>
+  </v-row> -->
 </template>
 <style>
-    .floatDivSlider {
-       float: left;
-       left:50%;
-       z-index: 1000;
-       padding: 5px;
-       color: #FFFFFF;
-       font-weight: bold;
-    }
+.floatDivSlider {
+  float: left;
+  left: 50%;
+  z-index: 1000;
+  padding: 5px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
 </style>
 <script>
 export default {
-    data: () => ({
-        carousel: []
-      }),
-      created () {
-        this.axios
-            .get(`/api/menu/product/getAll`)
-            .then((res) => {
-                this.carousel = res.data;
-            })
-            .catch(() => {
-                console.log("Error retrieving slider products");
-            });
-      }
+  data: () => ({
+    carousel: []
+  }),
+  created() {
+    this.axios
+      .get(`/api/menu/product/getAll`)
+      .then((res) => {
+        this.carousel = res.data;
+      })
+      .catch(() => {
+        console.log("Error retrieving slider products");
+      });
+  }
 }
 </script>

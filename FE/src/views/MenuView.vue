@@ -283,6 +283,7 @@ import StripePayment from '@/components/StripePayment.vue';
                 .get(`/api/menu/product/getAll`)
                 .then((res) => {
                 this.menuProducts = res.data;
+                this.menuProducts = this.manageNullImages(this.menuProducts);
             })
                 .catch(() => {
                 console.log("Error retrieving products");

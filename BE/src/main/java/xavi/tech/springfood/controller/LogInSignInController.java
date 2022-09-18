@@ -14,7 +14,6 @@ import xavi.tech.springfood.dto.AccountCredentialsDTO;
 import xavi.tech.springfood.dto.AccountEditDTO;
 import xavi.tech.springfood.model.Client;
 import xavi.tech.springfood.service.AccountService;
-import xavi.tech.springfood.service.AddressService;
 
 @AllArgsConstructor
 @RestController

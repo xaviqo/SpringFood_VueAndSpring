@@ -17,8 +17,8 @@ public class ProductDTO {
 	
 	private String description;
 	private String name;
-	private long price;
-	private long stock;
+	private int price;
+	private int stock;
 	private boolean useStock;
 	private String type;
 	private MultipartFile img;

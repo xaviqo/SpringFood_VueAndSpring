@@ -86,6 +86,13 @@ public class Order {
 		this.orderLines = new ArrayList<OrderLine>();
 		this.timestamp = LocalDateTime.now();
 	}
+	
+	public void setOrderLines(List<OrderLine> orderLines) {
+		for(OrderLine line : orderLines) {
+			totalAmount += line.getTotalLine();
+			setOrderLine(line);
+		}
+	}
 
 	public void setOrderLine(OrderLine orderLine) {
 		totalAmount += orderLine.getTotalLine();

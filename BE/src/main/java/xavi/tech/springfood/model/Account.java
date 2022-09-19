@@ -47,7 +47,7 @@ public class Account implements UserDetails{
 
 	@Column(length = 40, nullable = false)
 	private String name;
-	@Column(length = 12, nullable = false)
+	@Column(length = 24, nullable = false)
 	private String phone;
 	@Column(length = 40, nullable = false, unique = true)
 	private String email;

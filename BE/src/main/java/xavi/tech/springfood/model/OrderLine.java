@@ -34,12 +34,12 @@ public class OrderLine {
     @JsonBackReference
 	private Order order;
 	@Column(nullable = false)
-	private long quantity;
+	private int quantity;
 //	TODO: Maybe transient? this.getProduct().getPrice()*this.quantity;
 	@Column(nullable = false)
 	private long totalLine;
 		
-	public OrderLine(Product product, long quantity, long totalLine) {
+	public OrderLine(Product product, int quantity, long totalLine) {
 		super();
 		this.product = product;
 		this.quantity = quantity;
@@ -50,7 +50,7 @@ public class OrderLine {
 		
 	}
 
-	public void setQuantity(long quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 		if (Objects.nonNull(this.product)) {
 			this.totalLine = this.getProduct().getPrice()*this.quantity;

@@ -22,14 +22,14 @@ public class Product {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long productId;
-	@Column(nullable = false, length = 60)
+	@Column(nullable = false, length = 100)
 	private String name;
-	@Column(length= 150)
+	@Column
 	private String description;
 	@Column(nullable = false)
-	private long stock;
+	private int stock;
 	@Column(nullable = false)
-	private long price;
+	private int price;
 	@Column(length = 20)
 	private String cloudId;
 	@Column(length = 15)
@@ -40,7 +40,7 @@ public class Product {
 	private boolean active;
 	
 	
-	public Product(long productId, long price) {
+	public Product(long productId, int price) {
 		super();
 		this.productId = productId;
 		this.price = price;

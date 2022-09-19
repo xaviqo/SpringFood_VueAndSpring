@@ -21,7 +21,8 @@ public interface ProductRepository extends CrudRepository<Product, Long>{
 			+ "prd.description AS description, "
 			+ "prd.price AS price, "
 			+ "prd.cloud_id AS cloudId, "
-			+ "prd.type AS type "
+			+ "prd.type AS type, "
+			+ "prd.active AS active "
 			+ "FROM product prd "
 			+ "WHERE prd.use_stock = FALSE "
 			+ "OR prd.stock > 0", nativeQuery = true)
@@ -32,7 +33,7 @@ public interface ProductRepository extends CrudRepository<Product, Long>{
 	@Query(value = "SELECT prd.price "
 			+ "FROM product prd "
 			+ "WHERE prd.product_id = :productId", nativeQuery = true)
-	long findPriceByProductId(@Param("productId") long id);
+	int findPriceByProductId(@Param("productId") long id);
 	
     @Modifying
 	@Query(value = "UPDATE product "

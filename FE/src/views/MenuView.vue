@@ -2,7 +2,7 @@
   <v-row >
     <v-col cols="10">
       <v-row>
-        <v-col v-for="p in menuProducts" :key="p.productId">
+        <v-col v-for="p in menuProducts" :key="p.productId" v-if="p.active == true">
         <v-card
           class="mx-auto mt-5 flex d-flex flex-column elevation-0"
           color="#fdfdf6"
@@ -284,6 +284,7 @@ import StripePayment from '@/components/StripePayment.vue';
                 .then((res) => {
                 this.menuProducts = res.data;
                 this.menuProducts = this.manageNullImages(this.menuProducts);
+                console.log(this.menuProducts);
             })
                 .catch(() => {
                 console.log("Error retrieving products");

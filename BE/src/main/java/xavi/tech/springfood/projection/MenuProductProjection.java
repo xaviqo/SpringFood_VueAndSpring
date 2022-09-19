@@ -5,8 +5,9 @@ public interface MenuProductProjection {
 	String getProductId();
 	String getName();
 	String getDescription();
-	long getPrice();
+	int getPrice();
 	String getCloudId();
 	String getType();
+	boolean isActive();
 	
 }

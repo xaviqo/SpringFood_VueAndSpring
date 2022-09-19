@@ -106,7 +106,7 @@ public class StripeService {
 		try {
 			for (Map.Entry<String,Integer> line : payment.getProductsAndQuantity().entrySet()) {
 
-				long productPrice = productRepository.findPriceByProductId(Long.parseLong(line.getKey()));
+				int productPrice = productRepository.findPriceByProductId(Long.parseLong(line.getKey()));
 				calculatedTotal += productPrice*line.getValue();
 				Product product = new Product(Long.parseLong(line.getKey()),productPrice);
 				orderLines.add(new OrderLine(product,line.getValue(),productPrice*line.getValue()));

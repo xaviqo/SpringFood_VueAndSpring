@@ -2,7 +2,6 @@ package xavi.tech.springfood.controller.admin;
 
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,7 +41,7 @@ public class AdminProductController {
 	}
 
 	@DeleteMapping(path="/deleteImg/{imgId}")
-	public ResponseEntity<Map> deleteImg(@PathVariable String cloudId) {
+	public ResponseEntity<?> deleteImg(@PathVariable String cloudId) {
 		return productService.deleteImg(cloudId);
 	}
 	

@@ -18,7 +18,7 @@
     <v-divider></v-divider>
     <v-col>
       <div>
-        <v-data-table :headers="headers" :items="stockProducts" height="50vh" :search="search">
+        <v-data-table :headers="headers" :items="stockProducts" loading :loading="loadingStock" height="50vh" :search="search">
           <!--HEADERS-->
           <template v-slot:header.price="{ header }">
             <span class="tableHeader">{{ header.text }}</span>
@@ -144,6 +144,7 @@ export default {
   mixins: [mixins],
   data() {
     return {
+      loadingStock: true,
       stockAlert: {
         high: 0,
         highColor: 'green',
@@ -293,9 +294,10 @@ export default {
           this.stockProducts = res.data;
           this.configureStockAlert(res.data);
           this.stockProducts = this.manageNullImages(this.stockProducts);
-          console.log(this.stockProducts);
+          this.loadingStock = false;
         })
         .catch(() => {
+          this.loadingStock = false;
           this.showAlert({
             color: "red",
             show: true,

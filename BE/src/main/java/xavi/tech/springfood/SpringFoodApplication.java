@@ -1,5 +1,6 @@
 package xavi.tech.springfood;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,12 +39,12 @@ public class SpringFoodApplication implements CommandLineRunner{
 	public static void main(String[] args) {
 		SpringApplication.run(SpringFoodApplication.class, args);
 	}
-	
+
 	@Bean
 	BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	private ProductRepository productRepository;
 	private ClientRepository clientRepository;
 	private WorkerRepository  workerRepository;
@@ -52,125 +53,32 @@ public class SpringFoodApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-		int clientsQuantity = 280;
-		int workersQuantity = 40;
-		int productsQuantity = 80;
-		int ordersQuantity = 365;
-		int maxLinesPerOrder = 8;
-		int totalProducts = productsQuantity+8;
-		
+
+		int multiplier = 1;
+		int clientsQuantity = 100;
+		int workersQuantity = 100;
+		int productsQuantity = 120;
+		int ordersQuantity = 500;
+		int maxLinesPerOrder = 12;
+
 		String defaultPassword = "pass123";
 
 		// CFG
-		
+
 		SpringFoodCfg cfg = new SpringFoodCfg();
-		
+
 		cfg.setFirstDeliveryAvailable(LocalTime.of(20, 00));
 		cfg.setLastDeliveryAvailable(LocalTime.of(23, 00));
-		cfg.setOpenDashboardTime(LocalTime.of(19, 00));
-		cfg.setCloseDashboardTime(LocalTime.of(01, 00));
-		cfg.setDashboardTableDaysDifference(1);
+		cfg.setInitDate(LocalDate.now().atTime(19,00));
+		cfg.setDashboardHoursSpan(8);
 		cfg.setMinutesTimeSlot(30);
-		
+
 		cfg.generateDeliveryTimes();
 
 		cfgRepository.save(cfg);
-		
-		// ADDRESS
-		
-		var addressGenerator = new ExampleDataGenerator<>(Address.class, LocalDateTime.now());
-		
-		addressGenerator.setData(Address::setCity, DataType.CITY);
-		addressGenerator.setData(Address::setAddress, DataType.ADDRESS);
-		
-		List<Address> addressList = addressGenerator.create(clientsQuantity, new Random().nextInt());
-		
-		// CLIENTS
-		
-		var clientGenerator = new ExampleDataGenerator<>(Client.class, LocalDateTime.now());	
-		
-		clientGenerator.setData(Client::setName, DataType.FIRST_NAME);
-		clientGenerator.setData(Client::setPhone, DataType.PHONE_NUMBER);
-		clientGenerator.setData(Client::setEmail, DataType.EMAIL);
-		
-		List<Client> clientList = clientGenerator.create(clientsQuantity, new Random().nextInt());
-		
-		for (int i = 0; i < clientList.size(); i++) {
-			
-			Address ad = addressList.get(i);
-			Client cl = clientList.get(i);
-			
-			ad.setMain(true);
-			cl.setAddress(ad);
-			ad.setClient(cl);
-			cl.setPassword(passwordEncoder().encode(defaultPassword));
-			
-			clientRepository.save(cl);
-			
-		}
-		
-		// WORKERS
-		
-		var workerGenerator = new ExampleDataGenerator<>(Worker.class, LocalDateTime.now());	
-		
-		workerGenerator.setData(Worker::setOrderManager, DataType.BOOLEAN_50_50);
-		workerGenerator.setData(Worker::setDeliverManager, DataType.BOOLEAN_50_50);
-		workerGenerator.setData(Worker::setProductManager, DataType.BOOLEAN_50_50);
-		workerGenerator.setData(Worker::setAdminSfCfg, DataType.BOOLEAN_50_50);
-		workerGenerator.setData(Worker::setName, DataType.FIRST_NAME);
-		workerGenerator.setData(Worker::setPhone, DataType.PHONE_NUMBER);
-		workerGenerator.setData(Worker::setEmail, DataType.EMAIL);
-		
-		List<Worker> workerList = workerGenerator.create(workersQuantity, new Random().nextInt());
-		
-		workerList.forEach(w -> w.setPassword(passwordEncoder().encode(defaultPassword)));
-		
-		workerRepository.saveAll(workerList);
-		
-		// PRODUCTS
-		
-		var productGenerator = new ExampleDataGenerator<>(Product.class, LocalDateTime.now());
-		
-		productGenerator.setData(Product::setName, DataType.FOOD_PRODUCT_NAME);
-		productGenerator.setData(Product::setDescription, DataType.SENTENCE);
-		productGenerator.setData(Product::setPrice, DataType.NUMBER_UP_TO_1000);
-		productGenerator.setData(Product::setStock, DataType.NUMBER_UP_TO_100);
-		productGenerator.setData(Product::setUseStock, DataType.BOOLEAN_50_50);
-		
-		List<Product> productList = productGenerator.create(workersQuantity, new Random().nextInt());
-		
-		for (Product p : productList) {
-			p.setCloudId("null_image");
-			p.setType(randomProductCategory());
-		}
-		
-		productRepository.saveAll(productList);
-		
-		// ORDERS
-		
-		List<Order> orderList = new ArrayList<>();
-		List<OrderLine> linesList = new ArrayList<>();
-		
-		for (int k = 0; k < ordersQuantity; k++) {
-			Order or = new Order();
-			or.setClient(randomClient(clientList));
-			or.setWorker(randomWorker(workerList));
-			randomOrderLines(productList, or, new Random().nextInt((maxLinesPerOrder-1))+1).forEach(
-					line -> or.setOrderLine(line)
-					);
-			or.setPaid(new Random().nextInt(2) == 1);
-			or.setDelivered(new Random().nextInt(2) == 1);
-			or.setDeliveryAddress(or.getClient().getAddresses().get(0));
-			or.setDeliveryTime(randomDeliverTime(cfg.getAvailableDeliveries()));
-			or.setTimestamp(randomTimeStamp());
-			orderList.add(or);
-		}
-		
-		orderRepository.saveAll(orderList);
-		
+
 		// MAIN TEST CLIENT
-		
+
 		Client cli1 = new Client();
 		Address add1 = new Address("Barelona", "Carrer Figuera, 48");
 		Address add1_2 = new Address("Girona", "Plç. Catalunya, 123");
@@ -182,18 +90,18 @@ public class SpringFoodApplication implements CommandLineRunner{
 		cli1.setPassword(passwordEncoder().encode(cli1.getPassword()));
 		cli1.setAddress(add1);
 		cli1.setAddress(add1_2);
-		
+
 		add1.setClient(cli1);
 		add1_2.setClient(cli1);
 		add1.setMain(true);
 		add1_2.setMain(false);
-		
+
 		clientRepository.save(cli1);
-		
+
 		// MAIN TEST WORKER
-		
+
 		Worker wrk1 = new Worker();
-		
+
 		wrk1.setOrderManager(true);
 		wrk1.setProductManager(true);
 		wrk1.setAdminSfCfg(true);
@@ -203,11 +111,11 @@ public class SpringFoodApplication implements CommandLineRunner{
 		wrk1.setEmail("work@work.com");
 		wrk1.setPassword("pass123");
 		wrk1.setPassword(passwordEncoder().encode(wrk1.getPassword()));
-		
+
 		workerRepository.save(wrk1);
 
 		// MAIN TEST PRODUCTS
-				
+
 		Product pro1 = new Product();
 		Product pro2 = new Product();
 		Product pro3 = new Product();
@@ -225,7 +133,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 		pro1.setCloudId("risiyveoolfkddy2b3vo");
 		pro1.setType("burger");
 		pro1.setActive(true);
-		
+
 		pro2.setName("Spring Pizza");
 		pro2.setDescription("Ecocinni squirty cheese manchego mozzarella fondue cottage cheese taleggio");
 		pro2.setStock(6);
@@ -234,7 +142,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 		pro2.setCloudId("bwdixrmxlfztzbjpgukc");
 		pro2.setType("pizza");
 		pro2.setActive(true);
-		
+
 		pro3.setName("Spring Soda");
 		pro3.setDescription("Stinking bishop taleggio cheese and wine fondue cottage cheese taleggio comes out everybodys happy");
 		pro3.setStock(30);
@@ -270,7 +178,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 		pro6.setCloudId("rwu47rmn1keq7q98o0e8");
 		pro6.setType("pizza");
 		pro6.setActive(true);
-		
+
 		pro7.setName("Pasta Al-Pastorinni");
 		pro7.setDescription("Manchego mozzarella fondue cottage taleggio macaroni cheese fondue cheddar danish fontina tagliattello");
 		pro7.setStock(9);
@@ -279,7 +187,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 		pro7.setCloudId("jait18jwpkhb2clbsnrw");
 		pro7.setType("pasta");
 		pro7.setActive(true);
-		
+
 		pro8.setName("La Green Burger");
 		pro8.setDescription("Plant based burger is for everyone, it's been decades in the making!");
 		pro8.setStock(0);
@@ -288,7 +196,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 		pro8.setCloudId("null_image");
 		pro8.setType("burger");
 		pro8.setActive(true);
-		
+
 		productRepository.save(pro1);
 		productRepository.save(pro2);
 		productRepository.save(pro3);
@@ -297,9 +205,115 @@ public class SpringFoodApplication implements CommandLineRunner{
 		productRepository.save(pro6);
 		productRepository.save(pro7);
 		productRepository.save(pro8);
-		
+
+		int cnt = 0;
+
+		while (cnt <= multiplier) {
+
+			cnt++;
+
+			// ADDRESS
+
+			var addressGenerator = new ExampleDataGenerator<>(Address.class, LocalDateTime.now());
+
+			addressGenerator.setData(Address::setCity, DataType.CITY);
+			addressGenerator.setData(Address::setAddress, DataType.ADDRESS);
+
+			List<Address> addressList = addressGenerator.create(clientsQuantity, new Random().nextInt());
+
+			// CLIENTS
+
+			var clientGenerator = new ExampleDataGenerator<>(Client.class, LocalDateTime.now());	
+
+			clientGenerator.setData(Client::setName, DataType.FIRST_NAME);
+			clientGenerator.setData(Client::setPhone, DataType.PHONE_NUMBER);
+			clientGenerator.setData(Client::setEmail, DataType.EMAIL);
+
+			List<Client> clientList = clientGenerator.create(clientsQuantity, new Random().nextInt());
+
+			for (int i = 0; i < clientList.size(); i++) {
+
+				Address ad = addressList.get(i);
+				Client cl = clientList.get(i);
+
+				ad.setMain(true);
+				cl.setAddress(ad);
+				ad.setClient(cl);
+				cl.setPassword(passwordEncoder().encode(defaultPassword));
+
+				clientList.set(i, cl);
+
+			}
+
+			clientRepository.saveAll(clientList);
+
+			// WORKERS
+
+			var workerGenerator = new ExampleDataGenerator<>(Worker.class, LocalDateTime.now());	
+
+			workerGenerator.setData(Worker::setOrderManager, DataType.BOOLEAN_50_50);
+			workerGenerator.setData(Worker::setDeliverManager, DataType.BOOLEAN_50_50);
+			workerGenerator.setData(Worker::setProductManager, DataType.BOOLEAN_50_50);
+			workerGenerator.setData(Worker::setAdminSfCfg, DataType.BOOLEAN_50_50);
+			workerGenerator.setData(Worker::setName, DataType.FIRST_NAME);
+			workerGenerator.setData(Worker::setPhone, DataType.PHONE_NUMBER);
+			workerGenerator.setData(Worker::setEmail, DataType.EMAIL);
+
+			List<Worker> workerList = workerGenerator.create(workersQuantity, new Random().nextInt());
+
+			workerList.forEach(w -> w.setPassword(passwordEncoder().encode(defaultPassword)));
+
+			workerRepository.saveAll(workerList);
+
+			// PRODUCTS
+
+			var productGenerator = new ExampleDataGenerator<>(Product.class, LocalDateTime.now());
+
+			productGenerator.setData(Product::setName, DataType.FOOD_PRODUCT_NAME);
+			productGenerator.setData(Product::setDescription, DataType.SENTENCE);
+			productGenerator.setData(Product::setPrice, DataType.NUMBER_UP_TO_1000);
+			productGenerator.setData(Product::setStock, DataType.NUMBER_UP_TO_100);
+			productGenerator.setData(Product::setUseStock, DataType.BOOLEAN_50_50);
+
+			List<Product> productList = productGenerator.create(productsQuantity, new Random().nextInt());
+
+			for (Product p : productList) {
+				p.setCloudId("null_image");
+				p.setType(randomProductCategory());
+			}
+
+			productRepository.saveAll(productList);
+
+			// ORDERS
+
+			List<Order> orderList = new ArrayList<>();
+
+			for (int k = 0; k < ordersQuantity; k++) {
+				Order or = new Order();
+				or.setClient(randomClient(clientList));
+				or.setWorker(randomWorker(workerList));
+				randomOrderLines(productList, or, new Random().nextInt((maxLinesPerOrder-1))+1).forEach(
+						line -> or.setOrderLine(line)
+						);
+				or.setPaid(new Random().nextInt(2) == 1);
+				or.setDelivered(new Random().nextInt(2) == 1);
+				or.setDeliveryAddress(or.getClient().getAddresses().get(0));
+				or.setDeliveryTime(randomDeliverTime(cfg.getAvailableDeliveries()));
+				or.setTimestamp(randomTimeStamp());
+				orderList.add(or);
+			}
+
+			orderRepository.saveAll(orderList);
+
+			productList.clear();
+			orderList.clear();
+			workerList.clear();
+			addressList.clear();
+			clientList.clear();
+		}
+
 	}
-	
+
 	private String randomDeliverTime(Set<LocalTime> availableDeliveries) {
 		List<LocalTime> times = availableDeliveries.stream().collect(Collectors.toList());
 		LocalTime randomTime = times.get(new Random().nextInt(times.size()));
@@ -307,7 +321,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 	}
 
 	private String randomProductCategory() {
-				
+
 		switch (new Random().nextInt(5)) {
 		case 0:
 			return "burger";
@@ -322,23 +336,23 @@ public class SpringFoodApplication implements CommandLineRunner{
 		default:
 			return "no_category";
 		}
-				
+
 	}
-	
+
 	private LocalDateTime randomTimeStamp() {
-		
+
 		int rnd = new Random().nextInt(7);
 		int minusDays = (rnd*2)-rnd;
 		int hours = new Random().nextInt(25);
-		
+
 		return LocalDateTime.now().minusDays(minusDays).plusHours(hours);
-		
+
 	}
-	
+
 	private List<OrderLine> randomOrderLines(List<Product> productList, Order order, int linesQuanitity) {
-		
+
 		List<OrderLine> lines = new ArrayList<>();
-		
+
 		for (int i = 0; i < linesQuanitity; i++) {
 			OrderLine ol = new OrderLine();
 			ol.setOrder(order);
@@ -346,20 +360,20 @@ public class SpringFoodApplication implements CommandLineRunner{
 			ol.setQuantity(new Random().nextInt(11)+1);
 			lines.add(ol);
 		}
-		
+
 		return lines;
-		
+
 	}
-	
+
 	private Client randomClient(List<Client> clientList) {
-		
+
 		return clientList.get(new Random().nextInt(clientList.size()));
-		
+
 	}
-	
+
 	private Worker randomWorker(List<Worker> workerList) {
-		
+
 		return workerList.get(new Random().nextInt(workerList.size()));
-		
+
 	}
 }

@@ -64,42 +64,42 @@
                         <v-sheet color="white" height="50" width="250" class="text-h5 font-weight-light mt-5">
                           <div justify="space-around" align="center">
                             <v-btn elevation="0" icon small>
-                              <v-icon dark @click="plusMinusDate(configure.opening, false)">
+                              <v-icon dark @click="plusMinusDate(configure.from, false)">
                                 mdi-minus-thick
                               </v-icon>
                             </v-btn>
-                            {{ configure.opening.d }}/{{ configure.opening.m }}/{{ configure.opening.y }}
+                            {{ configure.from.date.d }}/{{ configure.from.date.m }}/{{ configure.from.date.y }}
                             <v-btn elevation="0" icon small>
-                              <v-icon dark @click="plusMinusDate(configure.opening, true)">
+                              <v-icon dark @click="plusMinusDate(configure.from, true)">
                                 mdi-plus-thick
                               </v-icon>
                             </v-btn>
                           </div>
                         </v-sheet>
-                        <v-time-picker scrollable header-color="white" color="green" format="24hr"
-                          v-model="configure.opening.time.entire" @change="setHmOnTime(configure.opening)"
-                          class="compact-clock mt-n10 text-black"></v-time-picker>
+                        <v-time-picker ref="fromPicker" scrollable header-color="white" color="green" format="24hr"
+                          v-model="configure.from.localTime" @click:hour="setHourMinutes(configure.from)"
+                          class="compact-clock mt-n10 text-black custom-time-picker"></v-time-picker>
                       </v-col>
                       <v-col style="width: 320px; flex: 0 1 auto;" cols="6">
                         <h2>Closing:</h2>
                         <v-sheet color="white" height="50" width="250" class="text-h5 font-weight-light mt-5">
                           <div justify="space-around" align="center">
                             <v-btn elevation="0" icon small>
-                              <v-icon dark @click="plusMinusDate(configure.closing, false)">
+                              <v-icon dark @click="plusMinusDate(configure.to, false)">
                                 mdi-minus-thick
                               </v-icon>
                             </v-btn>
-                            {{ configure.closing.d }}/{{ configure.closing.m }}/{{ configure.closing.y }}
+                            {{ configure.to.date.d }}/{{ configure.to.date.m }}/{{ configure.to.date.y }}
                             <v-btn elevation="0" icon small>
-                              <v-icon dark @click="plusMinusDate(configure.closing, true)">
+                              <v-icon dark @click="plusMinusDate(configure.to, true)">
                                 mdi-plus-thick
                               </v-icon>
                             </v-btn>
                           </div>
                         </v-sheet>
-                        <v-time-picker scrollable header-color="white" color="green" format="24hr"
-                          v-model="configure.closing.time.entire" @change="setHmOnTime(configure.closing)"
-                          class="compact-clock mt-n10"></v-time-picker>
+                        <v-time-picker ref="toPicker" scrollable header-color="white" color="green" format="24hr"
+                          v-model="configure.to.localTime" @click:hour="setHourMinutes(configure.to)"
+                          class="compact-clock mt-n10 custom-time-picker"></v-time-picker>
                       </v-col>
                     </v-row>
                   </div>
@@ -108,10 +108,10 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green" text @click="spanOfTimeSaveOrClose(false)">
+              <v-btn color="green" text @click="saveSpanOfTime(false)">
                 Close
               </v-btn>
-              <v-btn color="green" text @click="spanOfTimeSaveOrClose(true)">
+              <v-btn color="green" text @click="saveSpanOfTime(true)">
                 Save
               </v-btn>
             </v-card-actions>
@@ -148,63 +148,57 @@ export default {
       orderLine: [],
       SF_localStorage: {},
       configure: {
-        opening: {
-          entire: null,
-          d: null,
-          m: null,
-          y: null,
-          time: {
-            entire: null,
+        from: {
+          id : 'from',
+          date : {
+            d: null,
+            m: null,
+            y: null
+          },
+          time : {
             h: null,
             m: null
           },
+          localDateTime: null,
+          localTime: null
         },
-        closing: {
-          entire: null,
-          d: null,
-          m: null,
-          y: null,
-          time: {
-            entire: null,
+        to: {
+          id: 'to',
+          date : {
+            d: null,
+            m: null,
+            y: null
+          },
+          time : {
             h: null,
             m: null
           },
+          localDateTime: null,
+          localTime: null
         },
-        daysDiff: 0,
+        hourSpan: 0,
         dialog: false
       }
     }
   },
   created: async function () {
     this.getTodayOrders();
-    this.configureTimes();
+    this.configureTimeSpan();
   },
   methods: {
-    async configureTimes() {
+    async configureTimeSpan() {
       this.axios
-        .get(`/api/admin/cfg/getDbOpenClose`)
+      .get(`/api/admin/cfg/getDbOpenClose`)
         .then((res) => {
+          this.configure.from.localDateTime = new Date(res.data.dayFrom);
+          this.configure.from.localTime = res.data.dayFrom.split("T")[1];
+          this.configure.to.localDateTime = new Date(res.data.dayTo);
+          this.configure.to.localTime = res.data.dayTo.split("T")[1];
 
-          this.configure.opening.time.entire = res.data.dayFrom;
-          this.configure.closing.time.entire = res.data.dayTo;
-          this.configure.daysDiff = res.data.daysDiff;
-
-          const dayToArr = res.data.dayTo.split(":");
-          const dayFromArr = res.data.dayFrom.split(":");
-
-          this.configure.opening.time.h = dayFromArr[0];
-          this.configure.opening.time.m = dayFromArr[1];
-          this.configure.closing.time.h = dayToArr[0];
-          this.configure.closing.time.m = dayToArr[1];
-
-          this.configure.opening.entire = new Date();
-          this.configure.opening.entire.setHours(this.configure.opening.time.h, this.configure.opening.time.m, 0, 0);
-          this.configure.closing.entire = new Date();
-          this.configure.closing.entire.setDate(this.configure.closing.entire.getDate() + this.configure.daysDiff);
-          this.configure.closing.entire.setHours(this.configure.closing.time.h, this.configure.closing.time.m, 0, 0);
-
-          this.setDmyOnDate(this.configure.opening);
-          this.setDmyOnDate(this.configure.closing);
+          this.setDayMonthYear(this.configure.from);
+          this.setDayMonthYear(this.configure.to);
+          this.setHourMinutes(this.configure.from);
+          this.setHourMinutes(this.configure.to);
         })
         .catch((e) => {
           this.showAlert({
@@ -215,26 +209,31 @@ export default {
           });
         });
     },
-    async spanOfTimeSaveOrClose(save) {
-      this.configure.dialog = !this.configure.dialog;
-      if (save) {
+    saveSpanOfTime(save){
 
-        if (this.isAfter(this.configure.closing.entire, this.configure.opening.entire)) {
+      this.configure.dialog = !this.configure.dialog;
+
+      if (save){
+
+        let spanOfTime = this.calcDiffDays(this.configure.from, this.configure.to);
+
+        if (spanOfTime > 1) {
+
+          let time = this.configure.from.localDateTime;
 
           let newCfg = {
-            daysDiff: null,
-            dayTo: null,
-            dayFrom: null
+            day: time.getDate(),
+            month: time.getMonth(),
+            year: time.getFullYear(),
+            hour: time.getHours(),
+            minutes: time.getMinutes(),
+            spanOfTime: spanOfTime
           };
-
-          newCfg.daysDiff = this.calcDiffDays(this.configure.closing, this.configure.opening);
-          newCfg.dayTo = this.configure.opening.time.entire;
-          newCfg.dayFrom = this.configure.closing.time.entire;
 
           this.axios
             .post(`/api/admin/cfg/setDbOpenClose`, newCfg)
             .then((res) => {
-              this.configureTimes();
+              this.configureTimeSpan();
               this.getTodayOrders();
               this.showAlert({
                 color: "green",
@@ -244,13 +243,14 @@ export default {
               });
             })
             .catch((e) => {
+              console.log(e);
               this.showAlert({
                 color: "red",
                 show: true,
                 type: "error",
-                msg: "Error saving time"
+                msg: "Error saving time configuration"
               });
-              this.configureTimes();
+              this.configureTimeSpan();
             });
 
         } else {
@@ -258,55 +258,59 @@ export default {
             color: "red",
             show: true,
             type: "error",
-            msg: "Invalid time values"
+            msg: "One hour difference is required"
           });
-          this.configureTimes();
         }
 
-      } else {
-        this.configureTimes();
+      }
+
+    },
+    setDayMonthYear(date){
+      date.date.d = date.localDateTime.getDate();
+      date.date.m = date.localDateTime.getMonth();
+      date.date.y = date.localDateTime.getFullYear();
+    },
+    setHourMinutes(date){
+
+      this.onlyEnableHour(true,date);
+
+      date.time.h = date.localTime.split(":")[0];
+      date.time.m = date.localTime.split(":")[1];
+      date.localDateTime.setHours(date.time.h,date.time.m,0,0);
+    },
+    onlyEnableHour(bool,date){
+      if (date.id == 'from'){
+        this.$nextTick(() => {
+          this.$refs.fromPicker.selectingHour = bool;
+        });
+      } else if (date.id == 'to') {
+        this.$nextTick(() => {
+          this.$refs.toPicker.selectingHour = bool;
+        });
       }
     },
-    isAfter(a, b) {
-      return Date.parse(a) > Date.parse(b);
-    },
-    calcDiffDays(close, open) {
-
-      let diffMillis = Math.abs(close.entire - open.entire) / 1000;
-      const diffDays = Math.floor(diffMillis / 86400);
-      return diffDays;
-    },
-    plusMinusDate(date, plus) {
-
-      this.setHmOnTime(date);
+    plusMinusDate(date,plus){
 
       if (plus) {
-        date.entire.setDate(date.entire.getDate() + 1);
+        date.localDateTime.setDate(date.localDateTime.getDate()+1);
       } else {
-        date.entire.setDate(date.entire.getDate() - 1);
+        date.localDateTime.setDate(date.localDateTime.getDate()-1);
       }
 
-      this.setDmyOnDate(date);
+      this.setDayMonthYear(date);
+      this.setHourMinutes(date);
 
     },
-    setDmyOnDate(date) {
-
-      date.d = date.entire.getDate();
-      date.m = date.entire.getMonth();
-      date.y = date.entire.getFullYear();
-
+    isAfter(from, to) {
+      return Date.parse(from.localDateTime) < Date.parse(to.localDateTime);
     },
-    setHmOnTime(date) {
-
-      const hmToSplit = date.time.entire;
-      date.time.h = hmToSplit.split(":")[0];
-      date.time.m = hmToSplit.split(":")[1];
-      date.entire.setHours(date.time.h, date.time.m, 0, 0);
-
+    calcDiffDays(from, to) {
+      if (this.isAfter(from,to)) return Math.abs(to.localDateTime - from.localDateTime) / 36e5;
+      else return 0;
     },
     async getTodayOrders() {
       this.axios
-        .get(`/api/admin/order/getTodayOrders`)
+        .get(`/api/admin/order/getOrdersByDate`)
         .then((res) => {
           this.orders = res.data;
           this.loadingOrders = false;
@@ -372,5 +376,9 @@ export default {
 
 .v-time-picker-title__time {
   margin-right: 42px;
+}
+
+.custom-time-picker .v-time-picker-title {
+  pointer-events: none;
 }
 </style>

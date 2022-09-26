@@ -27,7 +27,7 @@ public class OrderIdGenerator extends SequenceStyleGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session,
             Object object) throws HibernateException {
-        return valuePrefix + String.format(UUID.randomUUID().toString().substring(0, 6).toUpperCase()
+        return valuePrefix + String.format(UUID.randomUUID().toString().substring(0, 14).replace("-", "").toUpperCase()
         		+"_"+dateFormat.format(new Date()), 
         		super.generate(session, object));
     }

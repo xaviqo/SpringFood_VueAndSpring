@@ -12,8 +12,6 @@
           <v-divider/>
           <v-flex style="overflow: auto">
             <v-data-table
-              loading
-              :loading="loadingLine"
               loading-text="Loading order line..."
               no-data-text="Please, select an order to expand"
               :headers="headers"
@@ -42,7 +40,6 @@ import { mixins } from '@/mixins.js';
             { text: 'Quantity', value: 'quantity'},
             { text: 'Total', value: 'totalLine'}
           ],
-        loadingLine: false
       }
     },
     created: async function() {

@@ -67,15 +67,13 @@ public class OrderService{
 
 		List<OrderDashboardDTO> orderDashboardList = new ArrayList<>();
 		Optional<SpringFoodCfg> cfg = cfgRepository.findById(1);
-		
-		try {
-							
-				LocalDateTime open = LocalDateTime.now();
-				open.with(cfg.get().getOpenDashboardTime());
-				LocalDateTime close = open.plusDays(cfg.get().getDashboardTableDaysDifference());
-				close.with(cfg.get().getCloseDashboardTime());
 
-			for (DashboardOrdersProjection projection : orderRepository.getTodayOrders(open,close)) {
+		try {
+			
+			LocalDateTime from = cfg.get().getInitDate();
+			LocalDateTime to = from.plusHours(cfg.get().getDashboardHoursSpan());
+
+			for (DashboardOrdersProjection projection : orderRepository.getTodayOrders(from,to)) {
 				orderDashboardList.add(OrderDashboardDTO.projectionToDTO(projection));
 			}
 
@@ -86,17 +84,17 @@ public class OrderService{
 		}
 
 	}
-	
+
 	public ResponseEntity<?> getClientOrders() {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Client client = clientRepository.findByEmail(authentication.getName());
 		List<Order> allClientOrders = orderRepository.findByClient(client);
-		
+
 		return ResponseEntity.ok(OrderForClientOrdersDTO.orderListToDtoList(allClientOrders));
 
 	}
-	
+
 	public ResponseEntity<?> getLinesFromOrder(String orderId) {
 
 
@@ -147,18 +145,18 @@ public class OrderService{
 		long total = 0L;
 
 		for (int i = LocalDate.now().getDayOfWeek().getValue(); i > 0; i--) {
-				
+
 			from = LocalDate.now().minusDays(i).atStartOfDay();
 			to = from.plusDays(1);
-			
+
 			for (long amount : orderRepository.totalAmountsOfDay(from,to)) total+= amount;
-			
+
 			infoForEachBar.put(from.getDayOfWeek(),total);
-			
+
 			total = 0L;
 
 		}
-		
+
 		for (long amount : orderRepository.totalAmountsOfDay(
 				LocalDate.now().atStartOfDay(),LocalDate.now().plusDays(1).atStartOfDay()
 				)) total += amount;
@@ -168,7 +166,7 @@ public class OrderService{
 		return ResponseEntity.ok().body(infoForEachBar);
 
 	}
-	
+
 	public ResponseEntity<?> getDemandProductCard(boolean high) {
 
 		if (high) return ResponseEntity.ok().body(orderRepository.highProductDemand());

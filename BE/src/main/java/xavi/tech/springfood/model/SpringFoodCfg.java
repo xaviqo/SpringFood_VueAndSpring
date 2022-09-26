@@ -1,5 +1,6 @@
 package xavi.tech.springfood.model;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,11 +29,9 @@ public class SpringFoodCfg {
 	@Column
 	private LocalTime lastDeliveryAvailable;
 	@Column
-	private LocalTime openDashboardTime;
+	private int dashboardHoursSpan;
 	@Column
-	private LocalTime closeDashboardTime;
-	@Column
-	private int dashboardTableDaysDifference;
+	private LocalDateTime initDate;
 	@Transient
 	private Set<LocalTime> availableDeliveries;
 	

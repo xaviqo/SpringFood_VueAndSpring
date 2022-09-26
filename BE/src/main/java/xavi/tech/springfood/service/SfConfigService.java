@@ -1,5 +1,6 @@
 package xavi.tech.springfood.service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,9 +89,10 @@ public class SfConfigService {
 		Optional<SpringFoodCfg> cfg = cfgRepository.findById(1);
 
 		if (cfg.isPresent()) {
-			dashboardOpenClose.put("dayTo", cfg.get().getCloseDashboardTime().toString());
-			dashboardOpenClose.put("dayFrom", cfg.get().getOpenDashboardTime().toString());
-			dashboardOpenClose.put("daysDiff", cfg.get().getDashboardTableDaysDifference());
+			LocalDateTime from = cfg.get().getInitDate();
+			LocalDateTime to = from.plusHours(cfg.get().getDashboardHoursSpan());
+			dashboardOpenClose.put("dayTo", to);
+			dashboardOpenClose.put("dayFrom", from);
 			return ResponseEntity.ok(dashboardOpenClose);
 		} else {
 			throw new SpringFoodException(SpringFoodError.InternalError,"Error getting dashboard open and close times",HttpStatus.BAD_REQUEST);
@@ -103,12 +105,21 @@ public class SfConfigService {
 		Optional<SpringFoodCfg> cfg = cfgRepository.findById(1);
 
 		if (Objects.nonNull(newCfg) && cfg.isPresent()) {
+						
+			LocalDateTime newTime = LocalDateTime.of(
+					Integer.parseInt(newCfg.get("year")),
+					Integer.parseInt(newCfg.get("month")), 
+					Integer.parseInt(newCfg.get("day")),
+					Integer.parseInt(newCfg.get("hour")), 
+					Integer.parseInt(newCfg.get("minutes"))
+					);
+			cfg.get().setInitDate(newTime);
+			System.out.println(newTime);
+			cfg.get().setDashboardHoursSpan(Integer.valueOf(newCfg.get("spanOfTime")));;
+			cfgRepository.save(cfg.get());
 			
 			try {
-				cfg.get().setOpenDashboardTime(LocalTime.parse(newCfg.get("dayFrom")));
-				cfg.get().setCloseDashboardTime(LocalTime.parse(newCfg.get("dayTo")));
-				cfg.get().setDashboardTableDaysDifference(Integer.valueOf(newCfg.get("daysDiff")));
-				cfgRepository.save(cfg.get());
+
 			} catch (Exception e) {
 				throw new SpringFoodException(SpringFoodError.InternalError,"Error saving dashboard open and close times",HttpStatus.BAD_REQUEST);
 			}			

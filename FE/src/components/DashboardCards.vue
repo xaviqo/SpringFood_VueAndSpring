@@ -221,8 +221,6 @@ export default {
   methods: {
     switchCard(card) {
 
-      console.log(card);
-
       let auxOption = "";
 
       auxOption = card.title;

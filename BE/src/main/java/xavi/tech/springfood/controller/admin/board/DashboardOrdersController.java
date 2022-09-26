@@ -18,7 +18,7 @@ public class DashboardOrdersController{
 	
 	private final OrderService orderService;
 
-	@GetMapping(path="/getTodayOrders")
+	@GetMapping(path="/getOrdersByDate")
 	public ResponseEntity<?> getTodayOrders() {
 		return orderService.getTodayOrders();
 	}

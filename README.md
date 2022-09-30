@@ -2,11 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
-
-<center>![](https://i.imgur.com/bTagOUu.png)</center>
-
-
 <h2> About SpringFood </h2>
 
 SpringFood is a <strong>delivery management Web-App</strong> that allows you to manage products, stock, orders and workers with different roles. 

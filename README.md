@@ -3,9 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <h2> About SpringFood </h2>
-
-<img src="capture.png" alt="SpringFood" width="800"/>
-
+<p align=center>
+<img src="capture.png" alt="SpringFood" width="600"/>
+</p>
 SpringFood is a <strong>delivery management Web-App</strong> that allows you to manage products, stock, orders and workers with different roles. 
 
 The intention behind this project is just to learn how to develop with SpringBoot and VUE. So, <strong>the development is slow, since I can only dedicate to it in my spare time</strong>.

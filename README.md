@@ -16,7 +16,7 @@ The intention behind this project is just to learn how to develop with SpringBoo
 
 - <strong>The workers section.</strong> Workers can have different permissions, depending on which ones have been assigned to them by the administrators. 
 
-	Possible functions that can be give to the workers are:
+	Possible functions that can be given to the workers are:
 	
 		- Delivering __(UD.)_
 		- List orders by criteria

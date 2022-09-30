@@ -1,4 +1,4 @@
-<h1> SpringFood (Pre-Alpha) </h1>Cancel changes
+<h1> SpringFood (Pre-Alpha) </h1>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

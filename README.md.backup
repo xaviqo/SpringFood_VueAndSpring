@@ -17,9 +17,9 @@ The intention behind this project is just to learn how to develop with SpringBoo
 
 	Possible functions that can be accessed by the workers are:
 	
-		- Delivering __(UD.)_
+		- Delivering
 		- List orders by criteria
-		- List clients by criteria __(UD.)_
+		- List clients by criteria <i>(UD.)</i>
 		- Manage the catalog
 		- Create and modify products name, image, price, stock configuration...
 		- Configurar tienda (horarios y tiempos de entrega disponibles)

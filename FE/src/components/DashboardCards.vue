@@ -110,7 +110,7 @@
             <v-card class="elevation-0">
               <div class="d-flex flex-no-wrap justify-space-between">
                 <div width="100px">
-                  <v-card-title class="text-h5">{{card.product.name}}</v-card-title>
+                  <v-card-title class="text-h5 text-truncate" style="width:230px">{{card.product.name}}</v-card-title>
                   <div class="mt-n5">
                     <v-simple-table>
                       <thead>
@@ -130,13 +130,12 @@
                       <tbody>
                         <tr>
                           <td class="text-center">{{ card.product.stock }}</td>
-                          <td class="text-center">{{ card.product.sumTotal }}</td>
+                          <td class="text-center">{{ centsToEuro(card.product.sumTotal) }}</td>
                         </tr>
                       </tbody>
                     </v-simple-table>
                   </div>
                 </div>
-
                 <v-avatar class="ma-4" size="100" tile>
                   <cld-image v-bind:public-id="card.product.cloud">
                     <cld-transformation crop="fill" width="100" height="100" gravity="center" />
@@ -153,7 +152,9 @@
 </template>
 <script>
 import { EventBus } from '@/main.js';
+import { mixins } from '@/mixins.js';
 export default {
+  mixins: [mixins],
   data: () => ({
     cards: {
       delivered: {

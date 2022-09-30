@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +15,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.StopWatch;
 
 import com.vaadin.exampledata.DataType;
 import com.vaadin.exampledata.ExampleDataGenerator;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import xavi.tech.springfood.model.Address;
 import xavi.tech.springfood.model.Client;
 import xavi.tech.springfood.model.Order;
@@ -32,6 +35,7 @@ import xavi.tech.springfood.repository.ProductRepository;
 import xavi.tech.springfood.repository.SfCfgRepository;
 import xavi.tech.springfood.repository.WorkerRepository;
 
+@Slf4j
 @AllArgsConstructor
 @SpringBootApplication
 public class SpringFoodApplication implements CommandLineRunner{
@@ -53,12 +57,16 @@ public class SpringFoodApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-
-		int multiplier = 1;
-		int clientsQuantity = 100;
-		int workersQuantity = 100;
-		int productsQuantity = 120;
-		int ordersQuantity = 500;
+		
+		log.info("STARTING SPRINGFOOD...");
+		var stopWatch = new StopWatch();
+		stopWatch.start();		
+		
+		int multiplier = 2;
+		int clientsQuantity = 50;
+		int workersQuantity = 20;
+		int productsQuantity = 30;
+		int ordersQuantity = 100;
 		int maxLinesPerOrder = 12;
 
 		String defaultPassword = "pass123";
@@ -76,6 +84,9 @@ public class SpringFoodApplication implements CommandLineRunner{
 		cfg.generateDeliveryTimes();
 
 		cfgRepository.save(cfg);
+		
+		log.info("SF Configuration successfully loaded");
+		log.info("Generating demo data...");
 
 		// MAIN TEST CLIENT
 
@@ -97,6 +108,9 @@ public class SpringFoodApplication implements CommandLineRunner{
 		add1_2.setMain(false);
 
 		clientRepository.save(cli1);
+		
+		log.info("Hardcoded client "+cli1.getEmail()+"/"+cli1.getPassword()+" successfully loaded");
+
 
 		// MAIN TEST WORKER
 
@@ -113,6 +127,8 @@ public class SpringFoodApplication implements CommandLineRunner{
 		wrk1.setPassword(passwordEncoder().encode(wrk1.getPassword()));
 
 		workerRepository.save(wrk1);
+		
+		log.info("Hardcoded worker "+wrk1.getEmail()+"/"+wrk1.getPassword()+" successfully loaded");
 
 		// MAIN TEST PRODUCTS
 
@@ -139,7 +155,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 		pro2.setStock(6);
 		pro2.setPrice(900);
 		pro2.setUseStock(true);
-		pro2.setCloudId("bwdixrmxlfztzbjpgukc");
+		pro2.setCloudId("uo6zczyhis35sth4lypu");
 		pro2.setType("pizza");
 		pro2.setActive(true);
 
@@ -205,12 +221,27 @@ public class SpringFoodApplication implements CommandLineRunner{
 		productRepository.save(pro6);
 		productRepository.save(pro7);
 		productRepository.save(pro8);
+		
+		log.info("Hardcoded products successfully loaded");
+		log.info("########################################");
 
-		int cnt = 0;
+		int iteration = 0;
+		boolean firstIterationLog = true;
 
-		while (cnt <= multiplier) {
+		while (iteration <= multiplier) {
+			
+			log.info("Generating random data to populate database...");
+			
+			if (firstIterationLog) {
+				log.info("Total CLIENTS: "+clientsQuantity*multiplier);
+				log.info("Total WORKERS: "+workersQuantity*multiplier);
+				log.info("Total PRODUCTS: "+productsQuantity*multiplier);
+				log.info("Total ORDERS: "+ordersQuantity*multiplier+" with a max. of "+maxLinesPerOrder+" lines per order");
+				firstIterationLog = false;
+			}
 
-			cnt++;
+			log.info("POPULATING DB ITERATION: "+iteration+" OUT A TOTAL OF "+multiplier);
+			iteration++;
 
 			// ADDRESS
 
@@ -220,6 +251,8 @@ public class SpringFoodApplication implements CommandLineRunner{
 			addressGenerator.setData(Address::setAddress, DataType.ADDRESS);
 
 			List<Address> addressList = addressGenerator.create(clientsQuantity, new Random().nextInt());
+			log.info("Random addresses successfully created");
+
 
 			// CLIENTS
 
@@ -246,7 +279,8 @@ public class SpringFoodApplication implements CommandLineRunner{
 			}
 
 			clientRepository.saveAll(clientList);
-
+			log.info("Random clients successfully loaded");
+			
 			// WORKERS
 
 			var workerGenerator = new ExampleDataGenerator<>(Worker.class, LocalDateTime.now());	
@@ -264,6 +298,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 			workerList.forEach(w -> w.setPassword(passwordEncoder().encode(defaultPassword)));
 
 			workerRepository.saveAll(workerList);
+			log.info("Random workers successfully loaded");
 
 			// PRODUCTS
 
@@ -283,6 +318,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 			}
 
 			productRepository.saveAll(productList);
+			log.info("Random products successfully loaded");
 
 			// ORDERS
 
@@ -304,6 +340,7 @@ public class SpringFoodApplication implements CommandLineRunner{
 			}
 
 			orderRepository.saveAll(orderList);
+			log.info("Random orders successfully loaded");
 
 			productList.clear();
 			orderList.clear();
@@ -311,6 +348,16 @@ public class SpringFoodApplication implements CommandLineRunner{
 			addressList.clear();
 			clientList.clear();
 		}
+		
+		stopWatch.stop();
+		long millis = stopWatch.getTotalTimeMillis();
+		
+		String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+			    TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+			    TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+		
+		log.info("SPRINGFOOD SUCCESSFULLY LOADED IN "+hms);
+
 
 	}
 

@@ -53,6 +53,7 @@
           <v-card>
             <v-toolbar color="primary" dark elevation="0">
               <span class="font-weight-regular text-h5">Configure span of time</span>
+              <v-spacer></v-spacer><v-btn @click="resetTime()" class="white elevation-0" light small>RESET</v-btn>
             </v-toolbar>
             <v-card-text>
               <v-container>
@@ -177,6 +178,7 @@ export default {
           localTime: null
         },
         hourSpan: 0,
+        recievedSpan: 0,
         dialog: false
       }
     }
@@ -194,6 +196,7 @@ export default {
           this.configure.from.localTime = res.data.dayFrom.split("T")[1];
           this.configure.to.localDateTime = new Date(res.data.dayTo);
           this.configure.to.localTime = res.data.dayTo.split("T")[1];
+          this.configure.recievedSpan = this.calcDiffDays(this.configure.from, this.configure.to);
 
           this.setDayMonthYear(this.configure.from);
           this.setDayMonthYear(this.configure.to);
@@ -209,6 +212,13 @@ export default {
           });
         });
     },
+    resetTime(){
+      this.configure.from.localDateTime = new Date();
+      this.configure.from.localDateTime.setHours(19,0,0);
+      this.configure.to.localDateTime = new Date();
+      this.configure.to.localDateTime.setHours(23,0,0);
+      this.saveSpanOfTime(true);
+    },
     saveSpanOfTime(save){
 
       this.configure.dialog = !this.configure.dialog;
@@ -223,7 +233,7 @@ export default {
 
           let newCfg = {
             day: time.getDate(),
-            month: time.getMonth(),
+            month: this.fixJsMonth(time.getMonth()),
             year: time.getFullYear(),
             hour: time.getHours(),
             minutes: time.getMinutes(),
@@ -267,8 +277,11 @@ export default {
     },
     setDayMonthYear(date){
       date.date.d = date.localDateTime.getDate();
-      date.date.m = date.localDateTime.getMonth();
+      date.date.m = this.fixJsMonth(date.localDateTime.getMonth());
       date.date.y = date.localDateTime.getFullYear();
+    },
+    fixJsMonth(month){
+      return month+1;
     },
     setHourMinutes(date){
 

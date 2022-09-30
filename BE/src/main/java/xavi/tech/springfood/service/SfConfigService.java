@@ -113,8 +113,8 @@ public class SfConfigService {
 					Integer.parseInt(newCfg.get("hour")), 
 					Integer.parseInt(newCfg.get("minutes"))
 					);
+			
 			cfg.get().setInitDate(newTime);
-			System.out.println(newTime);
 			cfg.get().setDashboardHoursSpan(Integer.valueOf(newCfg.get("spanOfTime")));;
 			cfgRepository.save(cfg.get());
 			

@@ -4,9 +4,7 @@
 
 <h2> About SpringFood </h2>
 
-<center>
-![SpringFood](capture.png)
-</center>
+<img src="capture.png" alt="SpringFood" width="800"/>
 
 SpringFood is a <strong>delivery management Web-App</strong> that allows you to manage products, stock, orders and workers with different roles. 
 
